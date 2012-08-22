@@ -17,7 +17,7 @@ public class PhotoLocationOverlays extends ItemizedOverlay<OverlayItem>
 	/**
 	 * Overlay class for the map.
 	 */
-	
+
 	private ArrayList<OverlayItem> mOverlays = new ArrayList<OverlayItem>();
 	private static Context mContext;
 	protected boolean isMapMoving = false;
@@ -48,35 +48,35 @@ public class PhotoLocationOverlays extends ItemizedOverlay<OverlayItem>
 	{
 		return mOverlays.size();
 	}
-	
-	
+
+
 	public void addOverlay(OverlayItem overlay) 
 	{
-	    mOverlays.add(overlay);
-	    populate();
+		mOverlays.add(overlay);
+		populate();
 	}
-	
+
 	public PhotoLocationOverlays(Drawable defaultMarker, Context context) 
 	{
-		  super(boundCenterBottom(defaultMarker));
-		  mContext = context;
+		super(boundCenterBottom(defaultMarker));
+		mContext = context;
 	}
 
 	@Override
 	protected boolean onTap(int index) {
-	  OverlayItem item = mOverlays.get(index);
-	  //AlertDialog.Builder dialog = new AlertDialog.Builder(mContext);
-	  //dialog.setTitle(item.getTitle());
-	  String id = item.getSnippet();
-	  ((currentDamage) mContext.getApplicationContext()).setLocationID(Long.parseLong(id));
-	  Intent intent = new Intent(mContext,review_notes_screen.class);
-	  intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-	  PhotoLocationOverlays.mContext.startActivity(intent);
-	  //dialog.setMessage(item.getSnippet());
-	  //dialog.show();
-	  return true;
+		OverlayItem item = mOverlays.get(index);
+		//AlertDialog.Builder dialog = new AlertDialog.Builder(mContext);
+		//dialog.setTitle(item.getTitle());
+		String id = item.getSnippet();
+		((currentDamage) mContext.getApplicationContext()).setLocationID(Long.parseLong(id));
+		Intent intent = new Intent(mContext,review_notes_screen.class);
+		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		PhotoLocationOverlays.mContext.startActivity(intent);
+		//dialog.setMessage(item.getSnippet());
+		//dialog.show();
+		return true;
 	}
 
 
-	
+
 }
