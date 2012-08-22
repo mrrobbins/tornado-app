@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+      package="com.AlabamaDamageTracker"
+      android:versionCode="1"
+      android:versionName="1.0">
+    <uses-sdk android:targetSdkVersion="8" android:minSdkVersion="8" />
+	<uses-permission android:name="android.permission.CAMERA" />
+	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+	<uses-permission android:name="android.permission.INTERNET" />
+    <application android:icon="@drawable/icon" android:label="@string/app_name" android:name=".currentDamage" >
+    <uses-library android:name="com.google.android.maps" />
+        <activity android:name=".splash_screen"
+                  android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".homeScreen"></activity>
+		<activity android:name=".takePicture_screen" android:windowSoftInputMode="stateHidden"></activity>
+		<activity android:name=".add_notes_screen"></activity>
+		<activity android:name=".selectDamage_screen"></activity>
+		<activity android:name=".review_notes_screen"></activity>
+		<activity android:name=".MapBackdropActivity"></activity>
+		<activity android:name=".damageGallery"></activity>
+    </application>
+</manifest>

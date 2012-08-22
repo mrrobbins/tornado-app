@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:layout_height="match_parent" 
+	android:layout_width="match_parent" 
+	xmlns:android="http://schemas.android.com/apk/res/android"> 
+<com.google.android.maps.MapView
+    			 android:id="@+id/mapView"
+                 android:layout_width="fill_parent"
+                 android:layout_height="fill_parent"
+                 android:clickable="true"
+                 android:apiKey="0ACdGOZ5xjv8_zhZo9H0RQ7S-xGbSq2etXC9tug"
+                 />
+<Button android:layout_height="wrap_content" 
+     android:layout_width="wrap_content" 
+     android:id="@+id/mapContinue" 
+     android:text="Continue to Notes" 
+     android:layout_marginRight="18dp" 
+     android:layout_marginBottom="20dp" 
+     android:layout_alignParentRight="true" 
+     android:layout_alignParentBottom="true"/> 
+ <Button android:layout_height="wrap_content" 
+     android:layout_width="wrap_content" 
+     android:id="@+id/ToggleViewButton" 
+     android:text="ToggleView" 
+     android:layout_centerHorizontal="true" 
+     android:layout_alignBottom="@+id/EventFireButton" 
+     android:layout_alignBaseline="@+id/EventFireButton"/> 
+ </RelativeLayout>

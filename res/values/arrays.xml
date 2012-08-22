@@ -1,0 +1,41 @@
+<resources>
+		
+	<string-array name="EF_Rating">
+    		<item>EF - 0; 65-85 mph</item>
+    		<item>EF - 1; 86-110 mph</item>
+    		<item>EF - 2; 111-135 mph</item>
+    		<item>EF - 3; 136-165 mph</item>
+    		<item>EF - 4; 166-200 mph</item>
+    		<item>EF - 5; >200 mph</item>
+    	</string-array>
+    	<string-array name="Damage_Rating">
+    		<item>1 Small Barns or Farm Outbuildings (SBO)</item>
+    		<item>2 One- or Two-Family Residences (FR12)</item>
+    		<item>3 Manufactured Home – Single Wide (MHSW)</item>
+    		<item>4 Manufactured Home – Double Wide (MHDW)</item>
+    		<item>5 Apartments, Condos, Townhouses [3 stories or less] (ACT)</item>
+    		<item>6 Motel (M)</item>
+    		<item>7 Masonry Apartment or Motel Building (MAM)</item>
+    		<item>8 Small Retail Building [Fast Food Restaurants] (SRB)</item>
+    		<item>9 Small Professional Building [Doctor’s Office, Branch Banks] (SPB)</item>
+    		<item>10 Strip Mall (SM)</item>
+    		<item>11 Large Shopping Mall (LSM)</item>
+    		<item>12 Large, Isolated Retail Building [K-Mart, Wal-Mart] (LIRB)</item>
+    		<item>13 Automobile Showroom (ASR)</item>
+    		<item>14 Automobile Service Building (ASB)</item>
+    		<item>15 Elementary School [Single Story; Interior or Exterior Hallways] (ES)</item>
+    		<item>16 Junior or Senior High School (JHSH)</item>
+    		<item>17 Low-Rise Building [1–4 Stories] (LRB)</item>
+    		<item>18 Mid-Rise Building [5–20 Stories] (MRB)</item>
+    		<item>19 High-Rise Building [More than 20 Stories] (HRB)</item>
+    		<item>20 Institutional Building [Hospital, Government or University Building] (IB)</item>
+    		<item>21 Metal Building System (MBS)</item>
+    		<item>22 Service Station Canopy (SSC)</item>
+    		<item>23 Warehouse Building [Tilt-up Walls or Heavy-Timber Construction] (WHB)</item>
+    		<item>24 Electrical Transmission Lines (ETL)</item>
+    		<item>25 Free-Standing Towers (FST)</item>
+    		<item>26 Free-Standing Light Poles, Luminary Poles, Flag Poles (FSP)</item>
+    		<item>27 Trees: Hardwood (TH)</item>
+    		<item>28 Trees: Softwood (TS)</item>
+    	</string-array>
+</resources>

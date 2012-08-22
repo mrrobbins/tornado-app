@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent" android:weightSum="1">
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/Review_Damage_Title"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="#DC143C" >
+
+</TextView>
+<ScrollView android:layout_height="wrap_content" android:id="@+id/scrollView1" android:layout_width="match_parent">
+        <LinearLayout
+  			xmlns:android="http://schemas.android.com/apk/res/android"
+  			android:orientation="vertical"
+  			android:layout_width="match_parent"
+  			android:layout_height="match_parent" android:weightSum="1">
+
+    		<TextView
+    		    android:id="@+id/Review_GPS"
+    		    android:layout_width="wrap_content"
+    		    android:layout_height="wrap_content"
+    		    android:text="@string/Review_GPS"
+    		    android:textAppearance="?android:attr/textAppearanceMedium" >
+</TextView>
+
+    		<ImageView
+    		    android:id="@+id/ReviewImage"
+    		    android:layout_width="match_parent"
+    		    android:layout_height="95dp"
+    		    android:layout_gravity="center"
+    		    android:src="@drawable/icon" >
+</ImageView>
+
+    		<TextView
+    		    android:id="@+id/Review_StreetAdd"
+    		    android:layout_width="wrap_content"
+    		    android:layout_height="wrap_content"
+    		    android:text="@string/Review_Address"
+    		    android:textAppearance="?android:attr/textAppearanceMedium" >
+</TextView>
+
+    		<TextView
+    		    android:id="@+id/review_EF"
+    		    android:layout_width="wrap_content"
+    		    android:layout_height="wrap_content"
+    		    android:text="@string/review_EF"
+    		    android:textAppearance="?android:attr/textAppearanceMedium" >
+</TextView>
+
+    		<TextView
+    		    android:id="@+id/review_Degree_of_Damage"
+    		    android:layout_width="wrap_content"
+    		    android:layout_height="wrap_content"
+    		    android:text="@string/review_Degree_Of_Damage"
+    		    android:textAppearance="?android:attr/textAppearanceMedium" >
+</TextView>
+
+    		
+    		<LinearLayout android:layout_height="wrap_content" android:id="@+id/linearLayout1" android:layout_width="match_parent">
+
+        	<TextView
+        	    android:id="@+id/review_notes"
+        	    android:layout_width="244dp"
+        	    android:layout_height="wrap_content"
+        	    android:text="@string/review_text_notes"
+        	    android:textAppearance="?android:attr/textAppearanceMedium" >
+</TextView>
+
+        	<Button
+        	    android:id="@+id/ReviewAudio"
+        	    android:layout_width="wrap_content"
+        	    android:layout_height="80dp"
+        	    android:layout_weight="0.14"
+        	    android:text="@string/Listen_to_Audio" >
+</Button>
+   		 	</LinearLayout>
+
+    		<Button
+    		    android:id="@+id/editDamage"
+    		    android:layout_width="match_parent"
+    		    android:layout_height="wrap_content"
+    		    android:text="@string/review_edit_damage" >
+</Button>
+
+   		 	<Button
+   		 	    android:id="@+id/HOME"
+   		 	    android:layout_width="match_parent"
+   		 	    android:layout_height="wrap_content"
+   		 	    android:text="@string/Return_Home" >
+</Button>
+		</LinearLayout>
+    </ScrollView>
+    </LinearLayout>
