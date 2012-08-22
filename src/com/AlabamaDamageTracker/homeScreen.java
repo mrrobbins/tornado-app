@@ -82,15 +82,12 @@ public class homeScreen extends Activity {
 
 	{
 
-	@Override
 	public void onLocationChanged(Location loc)
 	{
 	latitude = String.valueOf(loc.getLatitude());
 	longitude = String.valueOf(loc.getLongitude());
 	}
 
-
-	@Override
 
 	public void onProviderDisabled(String provider)
 
@@ -105,8 +102,6 @@ public class homeScreen extends Activity {
 	}
 
 
-	@Override
-
 	public void onProviderEnabled(String provider)
 
 	{
@@ -117,7 +112,6 @@ public class homeScreen extends Activity {
 	}
 
 
-	@Override
 	public void onStatusChanged(String provider, int status, Bundle extras)
 	{
 	}
