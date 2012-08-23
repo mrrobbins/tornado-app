@@ -8,21 +8,21 @@
 	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <application android:icon="@drawable/icon" android:label="@string/app_name" android:name=".currentDamage" >
+    <application android:icon="@drawable/icon" android:label="@string/app_name" android:name=".CurrentDamage" >
     <uses-library android:name="com.google.android.maps" />
-        <activity android:name=".splash_screen"
+        <activity android:name=".SplashScreen"
                   android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".homeScreen"></activity>
-		<activity android:name=".takePicture_screen" android:windowSoftInputMode="stateHidden"></activity>
-		<activity android:name=".add_notes_screen"></activity>
-		<activity android:name=".selectDamage_screen"></activity>
-		<activity android:name=".review_notes_screen"></activity>
+        <activity android:name=".HomeScreen"></activity>
+		<activity android:name=".TakePictureScreen" android:windowSoftInputMode="stateHidden"></activity>
+		<activity android:name=".AddNotesScreen"></activity>
+		<activity android:name=".SelectDamageScreen"></activity>
+		<activity android:name=".ReviewNotesScreen"></activity>
 		<activity android:name=".MapBackdropActivity"></activity>
-		<activity android:name=".damageGallery"></activity>
+		<activity android:name=".DamageGallery"></activity>
     </application>
 </manifest>

@@ -14,7 +14,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class review_notes_screen extends Activity implements OnInitListener {
+public class ReviewNotesScreen extends Activity implements OnInitListener {
 
 	protected final Context Context = this;
 	private String GPS;
@@ -31,7 +31,7 @@ public class review_notes_screen extends Activity implements OnInitListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.review_notes_screen);
 
-		currentDamage info = ((currentDamage)getApplicationContext());
+		CurrentDamage info = ((CurrentDamage)getApplicationContext());
 		LocationID = info.getLocationID();
 
 		try {
@@ -44,7 +44,7 @@ public class review_notes_screen extends Activity implements OnInitListener {
 
 
 
-		databaseHelper myDbHelper = new databaseHelper(Context);    
+		DatabaseHelper myDbHelper = new DatabaseHelper(Context);    
 		myDbHelper.openDataBase();
 		try {
 			Cursor c = myDbHelper.getDamageByID(LocationID);
@@ -97,7 +97,7 @@ public class review_notes_screen extends Activity implements OnInitListener {
 		final Button HOME = (Button) findViewById(R.id.HOME);
 		HOME.setOnClickListener (new View.OnClickListener() {
 			public void onClick(View v) {
-				Intent intent = new Intent(getBaseContext(),homeScreen.class);
+				Intent intent = new Intent(getBaseContext(),HomeScreen.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivityForResult(intent,0);
 				finish();
@@ -107,7 +107,7 @@ public class review_notes_screen extends Activity implements OnInitListener {
 		final Button deleteDamage = (Button) findViewById(R.id.editDamage);
 		deleteDamage.setOnClickListener (new View.OnClickListener() {
 			public void onClick(View v) {
-				Intent intent = new Intent(getBaseContext(),add_notes_screen.class);
+				Intent intent = new Intent(getBaseContext(),AddNotesScreen.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivityForResult(intent,0);
 				finish();

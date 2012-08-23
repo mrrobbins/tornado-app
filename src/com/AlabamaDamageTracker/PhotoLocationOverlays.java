@@ -68,8 +68,8 @@ public class PhotoLocationOverlays extends ItemizedOverlay<OverlayItem>
 		//AlertDialog.Builder dialog = new AlertDialog.Builder(mContext);
 		//dialog.setTitle(item.getTitle());
 		String id = item.getSnippet();
-		((currentDamage) mContext.getApplicationContext()).setLocationID(Long.parseLong(id));
-		Intent intent = new Intent(mContext,review_notes_screen.class);
+		((CurrentDamage) mContext.getApplicationContext()).setLocationID(Long.parseLong(id));
+		Intent intent = new Intent(mContext,ReviewNotesScreen.class);
 		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		PhotoLocationOverlays.mContext.startActivity(intent);
 		//dialog.setMessage(item.getSnippet());

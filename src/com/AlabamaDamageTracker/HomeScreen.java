@@ -14,7 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-public class homeScreen extends Activity {
+public class HomeScreen extends Activity {
 
 	private LocationManager locationManager;
 	private LocationListener locationListener;
@@ -48,18 +48,18 @@ public class homeScreen extends Activity {
 		final Button reportedDamage = (Button) findViewById(R.id.home_reported_damage);
 
 
-		currentDamage info = ((currentDamage)getApplicationContext());
+		CurrentDamage info = ((CurrentDamage)getApplicationContext());
 		LocationID = info.getLocationID();
 
 		newDamage.setOnClickListener (new View.OnClickListener() {
 			public void onClick(View v) {
-				databaseHelper myDbHelper = new databaseHelper(Context);    
+				DatabaseHelper myDbHelper = new DatabaseHelper(Context);    
 				myDbHelper.openDataBase();
 				long locationID = myDbHelper.insertDamage(latitude, longitude, "", "", "", "", "", "", "");
-				((currentDamage) Context.getApplicationContext()).setLocationID(locationID);
+				((CurrentDamage) Context.getApplicationContext()).setLocationID(locationID);
 				//myDbHelper.updateGPS(latitude, LocationID, longitude);
 				myDbHelper.close();
-				Intent intent = new Intent(getBaseContext(),takePicture_screen.class);
+				Intent intent = new Intent(getBaseContext(),TakePictureScreen.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivityForResult(intent,0);
 			}
@@ -67,7 +67,7 @@ public class homeScreen extends Activity {
 
 		reportedDamage.setOnClickListener (new View.OnClickListener() {
 			public void onClick(View v) {
-				Intent intent = new Intent(getBaseContext(),selectDamage_screen.class);
+				Intent intent = new Intent(getBaseContext(),SelectDamageScreen.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivityForResult(intent,0);
 			}

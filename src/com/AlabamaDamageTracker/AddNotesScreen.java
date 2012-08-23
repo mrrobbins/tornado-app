@@ -29,7 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-public class add_notes_screen extends Activity {
+public class AddNotesScreen extends Activity {
 
 	protected final Context Context = this;
 
@@ -52,11 +52,11 @@ public class add_notes_screen extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.add_notes_screen);
-		currentDamage info = ((currentDamage)getApplicationContext());
+		CurrentDamage info = ((CurrentDamage)getApplicationContext());
 		LocationID = info.getLocationID(); 
 
 		try {
-			databaseHelper myDbHelper = new databaseHelper(this);
+			DatabaseHelper myDbHelper = new DatabaseHelper(this);
 			myDbHelper.openDataBase();
 			Cursor c = myDbHelper.getDamagePic(LocationID);
 			ImageView i = (ImageView) findViewById(R.id.add_damage_image);
@@ -100,7 +100,7 @@ public class add_notes_screen extends Activity {
 
 
 		try {
-			databaseHelper myDbHelper = new databaseHelper(this);
+			DatabaseHelper myDbHelper = new DatabaseHelper(this);
 			myDbHelper.openDataBase();
 			Cursor c = myDbHelper.getDamageByID(LocationID);
 			String GPS = c.getString(1)+", "+c.getString(2);
@@ -132,7 +132,7 @@ public class add_notes_screen extends Activity {
 		final Button saveDamage = (Button) findViewById(R.id.Save);
 		saveDamage.setOnClickListener (new View.OnClickListener() {
 			public void onClick(View v) {
-				databaseHelper myDbHelper = new databaseHelper(Context);    
+				DatabaseHelper myDbHelper = new DatabaseHelper(Context);    
 				myDbHelper.openDataBase();
 
 				MultiAutoCompleteTextView add = (MultiAutoCompleteTextView) findViewById(R.id.add_street_address);
@@ -144,7 +144,7 @@ public class add_notes_screen extends Activity {
 				notes = notesEdit.toString();
 
 				myDbHelper.updateDamage(LocationID, "", "", address, "", notes, "Kyle", degree, ef);
-				Intent intent = new Intent(getBaseContext(),review_notes_screen.class);
+				Intent intent = new Intent(getBaseContext(),ReviewNotesScreen.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivityForResult(intent,0);
 				finish();
@@ -156,12 +156,12 @@ public class add_notes_screen extends Activity {
 		deleteDamage.setOnClickListener (new View.OnClickListener() {
 			public void onClick(View v) {
 
-				databaseHelper myDbHelper = new databaseHelper(Context);    
+				DatabaseHelper myDbHelper = new DatabaseHelper(Context);    
 				myDbHelper.openDataBase();
 				myDbHelper.deleteRecord( LocationID);
 				myDbHelper.close();
-				((currentDamage) Context.getApplicationContext()).setLocationID(-1);
-				Intent intent = new Intent(getBaseContext(),homeScreen.class);
+				((CurrentDamage) Context.getApplicationContext()).setLocationID(-1);
+				Intent intent = new Intent(getBaseContext(),HomeScreen.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivityForResult(intent,0);
 				finish();
@@ -190,7 +190,7 @@ public class add_notes_screen extends Activity {
 		final Button ReviewDamagePics = (Button) findViewById(R.id.add_all_pictures);
 		ReviewDamagePics.setOnClickListener (new View.OnClickListener() {
 			public void onClick(View v) {
-				Intent intent = new Intent(getBaseContext(),damageGallery.class);
+				Intent intent = new Intent(getBaseContext(),DamageGallery.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivityForResult(intent,0);
 			}
@@ -199,8 +199,8 @@ public class add_notes_screen extends Activity {
 		final Button addDamagePics = (Button) findViewById(R.id.add_pictures);
 		addDamagePics.setOnClickListener (new View.OnClickListener() {
 			public void onClick(View v) {
-				//((currentDamage) Context.getApplicationContext()).setLocationID(LocationID);
-				Intent intent = new Intent(getBaseContext(),takePicture_screen.class);
+				//((CurrentDamage) Context.getApplicationContext()).setLocationID(LocationID);
+				Intent intent = new Intent(getBaseContext(),TakePictureScreen.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivityForResult(intent,0);
 				finish();
@@ -269,7 +269,7 @@ public class add_notes_screen extends Activity {
 		}
 
 		private void showToast(String text) {
-			Toast.makeText(add_notes_screen.this, text, 1000).show();
+			Toast.makeText(AddNotesScreen.this, text, 1000).show();
 		}	   		
 	}
 

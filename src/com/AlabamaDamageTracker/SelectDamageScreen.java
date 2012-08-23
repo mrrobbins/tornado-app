@@ -24,7 +24,7 @@ import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.Toast;
 
-public class selectDamage_screen extends MapActivity implements OnClickListener
+public class SelectDamageScreen extends MapActivity implements OnClickListener
 {
 	/** Called when the activity is first created. */
 
@@ -68,8 +68,8 @@ public class selectDamage_screen extends MapActivity implements OnClickListener
 		Button toggleView = (Button) findViewById(R.id.ToggleViewButton);
 		toggleView.setOnClickListener(this);
 
-		databaseHelper myDbHelper = new databaseHelper(this);
-		myDbHelper = new databaseHelper(this);
+		DatabaseHelper myDbHelper = new DatabaseHelper(this);
+		myDbHelper = new DatabaseHelper(this);
 		myDbHelper.openDataBase();
 		Cursor c = myDbHelper.getAllLocations() ;
 		try{
@@ -151,7 +151,7 @@ public class selectDamage_screen extends MapActivity implements OnClickListener
 		{
 		case R.id.mapContinue:
 		{
-			Intent intent = new Intent(getBaseContext(),homeScreen.class);
+			Intent intent = new Intent(getBaseContext(),HomeScreen.class);
 			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			startActivityForResult(intent,0);
 			finish();
@@ -225,7 +225,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class selectDamage_screen extends ListActivity {
+public class SelectDamageScreen extends ListActivity {
 
 	public  ArrayList<String> Locations = new ArrayList<String>();
 	public ArrayList<String> LocationIDs = new ArrayList<String>();
@@ -235,8 +235,8 @@ public class selectDamage_screen extends ListActivity {
 	  super.onCreate(savedInstanceState);
 
 
-	  databaseHelper myDbHelper = new databaseHelper(this);
-      myDbHelper = new databaseHelper(this);
+	  DatabaseHelper myDbHelper = new DatabaseHelper(this);
+      myDbHelper = new DatabaseHelper(this);
       myDbHelper.openDataBase();
       Cursor c = myDbHelper.getAllLocations() ;
       try{
@@ -272,8 +272,8 @@ public class selectDamage_screen extends ListActivity {
 
 		// 	  String IDNum = LocationIDs.get(position);
 		// 	  long ID = Long.parseLong(IDNum.trim());;
-		 //    ((currentDamage) this.getApplicationContext()).setReviewID( (ID));
-		 //	  Intent intent = new Intent(getBaseContext(),review_notes_screen.class);
+		 //    ((CurrentDamage) this.getApplicationContext()).setReviewID( (ID));
+		 //	  Intent intent = new Intent(getBaseContext(),ReviewNotesScreen.class);
 		 //	  intent.putExtra("ID", ID);
 		 //	  startActivityForResult(intent,0); 
 		 //	  finish();

@@ -18,7 +18,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 
-public class databaseHelper extends SQLiteOpenHelper{
+public class DatabaseHelper extends SQLiteOpenHelper{
 
 	private static String KEY_LAT = "gps_Lat";
 	private static String KEY_LONG = "gps_longi";
@@ -51,7 +51,7 @@ public class databaseHelper extends SQLiteOpenHelper{
 	 * Takes and keeps a reference of the passed context in order to access to the application assets and resources.
 	 * @param context
 	 */
-	public databaseHelper(Context context) {
+	public DatabaseHelper(Context context) {
 
 		super(context, DB_NAME, null, 1);
 		this.myContext = context;

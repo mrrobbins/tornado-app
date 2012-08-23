@@ -12,7 +12,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.widget.Toast;
 
-public class takePicture_screen extends Activity {
+public class TakePictureScreen extends Activity {
 
 	private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 0;
 	private long LocationID;
@@ -21,14 +21,14 @@ public class takePicture_screen extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		currentDamage info = ((currentDamage)getApplicationContext());
+		CurrentDamage info = ((CurrentDamage)getApplicationContext());
 		LocationID = info.getLocationID(); 
 
 		takePicture(LocationID+"", LocationID);
 	}
 
 	public void takePicture(String filename, long id){
-		databaseHelper myDbHelper = new databaseHelper(this);
+		DatabaseHelper myDbHelper = new DatabaseHelper(this);
 		myDbHelper.openDataBase();
 		ContentValues values = new ContentValues();
 		values.put(MediaStore.Images.Media.TITLE, filename);
@@ -54,7 +54,7 @@ public class takePicture_screen extends Activity {
 			if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
 				if (resultCode == RESULT_OK) {
 					String provider = null;
-					//((currentDamage) getBaseContext().getApplicationContext()).setLocationID(LocationID);
+					//((CurrentDamage) getBaseContext().getApplicationContext()).setLocationID(LocationID);
 					Intent intent = new Intent(getBaseContext(),MapBackdropActivity.class);
 					//intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 					startActivityForResult(intent,0);

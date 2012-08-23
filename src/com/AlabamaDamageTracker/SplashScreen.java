@@ -9,7 +9,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 
-public class splash_screen extends Activity implements Runnable{
+public class SplashScreen extends Activity implements Runnable{
 
 	public int X = 0;
 
@@ -21,8 +21,8 @@ public class splash_screen extends Activity implements Runnable{
 		super.onCreate(savedInstanceState);	  
 		setContentView(R.layout.splash);	
 		Context x = this;
-		databaseHelper myDbHelper = new databaseHelper(x);
-		myDbHelper = new databaseHelper(this);
+		DatabaseHelper myDbHelper = new DatabaseHelper(x);
+		myDbHelper = new DatabaseHelper(this);
 		try {
 			myDbHelper.createDataBase();
 		} catch (IOException ioe) {	 
@@ -33,22 +33,22 @@ public class splash_screen extends Activity implements Runnable{
 		} catch(SQLException sqle){
 			throw sqle;		 
 		}
-		Intent intent = new Intent(getBaseContext(),homeScreen.class);
+		Intent intent = new Intent(getBaseContext(),HomeScreen.class);
 		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		startActivityForResult(intent,0);
 		finish();
 	}
 
 	public void onResume(Bundle savedInstanceState){
-		Intent intent = new Intent(getBaseContext(),homeScreen.class);
+		Intent intent = new Intent(getBaseContext(),HomeScreen.class);
 		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		startActivityForResult(intent,0);
 		finish();
 	}
 
 	public void run() {
-		databaseHelper myDbHelper = new databaseHelper(this);
-		myDbHelper = new databaseHelper(this);
+		DatabaseHelper myDbHelper = new DatabaseHelper(this);
+		myDbHelper = new DatabaseHelper(this);
 		try {
 			myDbHelper.createDataBase();
 		} catch (IOException ioe) {	 
@@ -67,7 +67,7 @@ public class splash_screen extends Activity implements Runnable{
 	private Handler handler = new Handler(){
 		@Override
 		public void handleMessage(Message msg){
-			Intent intent = new Intent(getBaseContext(),homeScreen.class);
+			Intent intent = new Intent(getBaseContext(),HomeScreen.class);
 			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			startActivityForResult(intent,0);
 			finish();
@@ -83,7 +83,7 @@ public class splash_screen extends Activity implements Runnable{
 	@Override
 	public void onRestoreInstanceState(Bundle savedInstanceState) {
 		super.onRestoreInstanceState(savedInstanceState);
-		Intent intent = new Intent(getBaseContext(),homeScreen.class);
+		Intent intent = new Intent(getBaseContext(),HomeScreen.class);
 		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		startActivityForResult(intent,0);
 		finish();}

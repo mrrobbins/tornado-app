@@ -20,7 +20,7 @@ import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-public class damageGallery extends Activity {
+public class DamageGallery extends Activity {
 
 	public ArrayList<String> Strin = new ArrayList<String>();
 	public long LocationID;
@@ -30,15 +30,15 @@ public class damageGallery extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.gallery);
-		currentDamage info = ((currentDamage)getApplicationContext());
+		CurrentDamage info = ((CurrentDamage)getApplicationContext());
 		LocationID = info.getLocationID();
-		databaseHelper myDbHelper = new databaseHelper(getBaseContext());    
+		DatabaseHelper myDbHelper = new DatabaseHelper(getBaseContext());    
 		myDbHelper.openDataBase();
 		Cursor c = myDbHelper.getAllDamagePic(LocationID);
 		try {
 			do {
-				//  Toast.makeText(damageGallery.this, "" + c.getCount() + "   " +c.getString(0), Toast.LENGTH_SHORT).show();
-				// Toast.makeText(damageGallery.this, "Fail", Toast.LENGTH_SHORT).show();
+				//  Toast.makeText(DamageGallery.this, "" + c.getCount() + "   " +c.getString(0), Toast.LENGTH_SHORT).show();
+				// Toast.makeText(DamageGallery.this, "Fail", Toast.LENGTH_SHORT).show();
 				Strin.add(c.getString(0));
 				//  Strin.add(c.getString(0));
 			} while (c.moveToNext());

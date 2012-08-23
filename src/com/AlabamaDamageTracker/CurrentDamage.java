@@ -2,7 +2,7 @@ package com.AlabamaDamageTracker;
 
 import android.app.Application;
 
-public class currentDamage extends Application {
+public class CurrentDamage extends Application {
 
 	private long userID;
 	private long locationID;

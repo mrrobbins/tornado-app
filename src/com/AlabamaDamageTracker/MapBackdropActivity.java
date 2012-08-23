@@ -66,9 +66,9 @@ public class MapBackdropActivity extends MapActivity implements OnClickListener
 		Button toggleView = (Button) findViewById(R.id.ToggleViewButton);
 		toggleView.setOnClickListener(this);
 
-		currentDamage info = ((currentDamage)getApplicationContext());
+		CurrentDamage info = ((CurrentDamage)getApplicationContext());
 		LocationID = info.getLocationID(); 
-		databaseHelper myDbHelper = new databaseHelper(Context);    
+		DatabaseHelper myDbHelper = new DatabaseHelper(Context);    
 		myDbHelper.openDataBase();
 
 		Cursor c = myDbHelper.getDamageByID(LocationID);
@@ -86,7 +86,7 @@ public class MapBackdropActivity extends MapActivity implements OnClickListener
 			Toast.makeText( getApplicationContext(),
 					"Problem with GPS Coordinates "+c.getCount(),
 					Toast.LENGTH_SHORT).show();
-			Intent intent = new Intent(getBaseContext(),add_notes_screen.class);
+			Intent intent = new Intent(getBaseContext(),AddNotesScreen.class);
 			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			startActivityForResult(intent,0);
 			finish();}
@@ -149,7 +149,7 @@ public class MapBackdropActivity extends MapActivity implements OnClickListener
 		{
 		case R.id.mapContinue:
 		{
-			Intent intent = new Intent(getBaseContext(),add_notes_screen.class);
+			Intent intent = new Intent(getBaseContext(),AddNotesScreen.class);
 			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			startActivityForResult(intent,0);
 			finish();
