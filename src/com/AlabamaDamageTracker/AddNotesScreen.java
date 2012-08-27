@@ -190,7 +190,7 @@ public class AddNotesScreen extends Activity {
 		final Button ReviewDamagePics = (Button) findViewById(R.id.add_all_pictures);
 		ReviewDamagePics.setOnClickListener (new View.OnClickListener() {
 			public void onClick(View v) {
-				Intent intent = new Intent(getBaseContext(),DamageGallery.class);
+				Intent intent = new Intent(getBaseContext(),ImagesActivity.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivityForResult(intent,0);
 			}
