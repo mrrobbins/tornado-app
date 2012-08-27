@@ -186,11 +186,31 @@ public class ImagesActivity extends Activity implements ImageSwitcher.ViewFactor
 					try {
 						Bitmap orig = null;
 						Bitmap scaled = null;
+						
+						BitmapFactory.Options bmo = new BitmapFactory.Options();
+						
+						bmo.inJustDecodeBounds = true;
+						bmo.inSampleSize = 1;
+						
 						InputStream is = new FileInputStream(paths.get(i));
-						orig = BitmapFactory.decodeStream(is);
-						is.close();
-						int width = Math.round(orig.getWidth() * (float) scale(60) / orig.getHeight());
-						scaled = Bitmap.createScaledBitmap(orig, width * 2, scale(60) * 2, true);
+						try {
+							BitmapFactory.decodeStream(is, null, bmo);
+						} finally {
+							is.close();
+						}
+						
+						int width = Math.round(bmo.outWidth * (float) scale(60) / bmo.outHeight);
+						int height = scale(60);
+						while (bmo.outWidth / bmo.inSampleSize > width && bmo.outHeight / bmo.inSampleSize > height) bmo.inSampleSize *= 2;
+						bmo.inJustDecodeBounds = false;
+						
+						is = new FileInputStream(paths.get(i));
+						try {
+							orig = BitmapFactory.decodeStream(is, null, bmo);
+						} finally {
+							is.close();
+						}
+						scaled = Bitmap.createScaledBitmap(orig, width, height, true);
 						orig.recycle();
 						runOnUiThread(new ThumbnailPoster(i, scaled));
 					} catch (IOException e) {
