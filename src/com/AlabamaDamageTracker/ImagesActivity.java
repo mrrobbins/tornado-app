@@ -202,6 +202,7 @@ public class ImagesActivity extends Activity implements ImageSwitcher.ViewFactor
 						int width = Math.round(bmo.outWidth * (float) scale(60) / bmo.outHeight);
 						int height = scale(60);
 						while (bmo.outWidth / bmo.inSampleSize > width && bmo.outHeight / bmo.inSampleSize > height) bmo.inSampleSize *= 2;
+						bmo.inSampleSize /= 2;
 						bmo.inJustDecodeBounds = false;
 						
 						is = new FileInputStream(paths.get(i));
@@ -283,33 +284,57 @@ public class ImagesActivity extends Activity implements ImageSwitcher.ViewFactor
 			Bitmap fullSize = null;
 			runOnUiThread(new SwitcherPoster(thumbnail, lock, false));
 			try {
+				
+				BitmapFactory.Options bmo = new BitmapFactory.Options();
+				
+				bmo.inJustDecodeBounds = true;
+				bmo.inSampleSize = 1;
+				
 				InputStream is = new FileInputStream(path);
-				fullSize = BitmapFactory.decodeStream(is);
-				is.close(); 
-				
-				int scaledHeight = 0;
-				int scaledWidth = 0;
-				for (int i = 0; i < 5 && scaledHeight == 0 && scaledWidth == 0; i++, Thread.sleep(15)) {
-					int viewHeight = switcher.getHeight();
-					int viewWidth = switcher.getWidth();
-					
-					int bmHeight = fullSize.getHeight();
-					int bmWidth = fullSize.getWidth();
-				
-					boolean port = (viewHeight / (float) bmHeight) * bmWidth < viewWidth;
-					scaledHeight = (port ? viewHeight :
-						Math.round(bmHeight * viewWidth / (float) bmWidth));
-					scaledWidth = (port ? Math.round(bmWidth * viewHeight / (float) bmHeight) :
-						viewWidth);
+				try {
+					BitmapFactory.decodeStream(is, null, bmo);
+				} finally {
+					is.close(); 
 				}
 				
-				Bitmap resized = null;
-				if (scaledHeight != 0 && scaledWidth != 0)
-					resized = Bitmap.createScaledBitmap(fullSize, scaledWidth, scaledHeight, true);
+				int viewHeight = switcher.getHeight();
+				int viewWidth = switcher.getWidth();
 				
-				fullSize.recycle();
+				for (int attempt = 1; attempt < 5 && (viewWidth == 0 || viewHeight == 0); ++attempt)  {
+					Thread.sleep(15);
+					viewHeight = switcher.getHeight();
+					viewWidth = switcher.getWidth();
+				}
 				
-				if (resized != null )runOnUiThread(new SwitcherPoster(resized, lock, true));
+				if (viewHeight != 0 && viewWidth != 0) {
+					while (bmo.outHeight / bmo.inSampleSize > viewHeight && bmo.outWidth / bmo.inSampleSize > viewWidth) bmo.inSampleSize *= 2;
+					bmo.inSampleSize /= 2;
+					bmo.inJustDecodeBounds = false;
+					
+					is = new FileInputStream(path);
+					try {
+						fullSize = BitmapFactory.decodeStream(is, null, bmo);
+						is.close();
+						
+						float widthFactor = (viewWidth / (float) bmo.outWidth);
+						float heightFactor = (viewHeight / (float) bmo.outHeight);
+						
+						float factor = Math.min(widthFactor, heightFactor);
+						
+						int scaledWidth = Math.min(Math.round(factor * bmo.outWidth), viewWidth);
+						int scaledHeight = Math.min(Math.round(factor * bmo.outHeight), viewHeight);
+						
+						Bitmap resized = Bitmap.createScaledBitmap(fullSize, scaledWidth, scaledHeight, true);
+						fullSize.recycle();
+						
+						if (resized != null ) runOnUiThread(new SwitcherPoster(resized, lock, true));
+						
+					} finally {
+						is.close();
+					}
+					
+					
+				}
 				
 			} catch (IOException e) {
 				e.printStackTrace();
