@@ -55,7 +55,7 @@ public class TakePictureScreen extends Activity {
 				if (resultCode == RESULT_OK) {
 					String provider = null;
 					//((CurrentDamage) getBaseContext().getApplicationContext()).setLocationID(LocationID);
-					Intent intent = new Intent(getBaseContext(),MapBackdropActivity.class);
+					Intent intent = new Intent(getBaseContext(), AddNotesScreen.class);
 					//intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 					startActivityForResult(intent,0);
 					//finish();
