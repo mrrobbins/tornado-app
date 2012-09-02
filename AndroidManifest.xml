@@ -20,7 +20,6 @@
         <activity android:name=".HomeScreen"></activity>
 		<activity android:name=".TakePictureScreen" android:windowSoftInputMode="stateHidden"></activity>
 		<activity android:name=".AddNotesScreen"></activity>
-		<activity android:name=".SelectDamageScreen"></activity>
 		<activity android:name=".ReviewNotesScreen"></activity>
 		<activity android:name=".MapBackdropActivity"></activity>
 		<activity android:name=".ImagesActivity"></activity>
