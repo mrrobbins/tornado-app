@@ -67,7 +67,7 @@ public class HomeScreen extends Activity {
 
 		reportedDamage.setOnClickListener (new View.OnClickListener() {
 			public void onClick(View v) {
-				Intent intent = new Intent(getBaseContext(),SelectDamageScreen.class);
+				Intent intent = new Intent(getBaseContext(),ReportListActivity.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivityForResult(intent,0);
 			}

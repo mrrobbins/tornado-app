@@ -24,5 +24,6 @@
 		<activity android:name=".ReviewNotesScreen"></activity>
 		<activity android:name=".MapBackdropActivity"></activity>
 		<activity android:name=".ImagesActivity"></activity>
+		<activity android:name=".ReportListActivity"></activity>
     </application>
 </manifest>
