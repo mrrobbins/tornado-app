@@ -30,14 +30,16 @@ import android.widget.Toast;
 
 
 public class AddNotesScreen extends Activity {
+	
+	public static final String KEY_LOCATION_ID = "location id";
 
-	protected final Context Context = this;
-
-	private long LocationID;
+	private long locationId;
 	private String ef;
 	private String degree;
 	private String address;
 	private String notes;
+	
+	private final AddNotesScreen self = this;
 
 
 	private static final String TAG = "VoiceRecognition";
@@ -51,14 +53,15 @@ public class AddNotesScreen extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
 		setContentView(R.layout.add_notes_screen);
-		CurrentDamage info = ((CurrentDamage)getApplicationContext());
-		LocationID = info.getLocationID(); 
+		
+		locationId = getIntent().getLongExtra(KEY_LOCATION_ID, -1);
 
 		try {
 			DatabaseHelper myDbHelper = new DatabaseHelper(this);
 			myDbHelper.openDataBase();
-			Cursor c = myDbHelper.getDamagePic(LocationID);
+			Cursor c = myDbHelper.getDamagePic(locationId);
 			ImageView i = (ImageView) findViewById(R.id.add_damage_image);
 			String picture = c.getString(0);
 			BitmapFactory.Options options = new BitmapFactory.Options();
@@ -102,7 +105,7 @@ public class AddNotesScreen extends Activity {
 		try {
 			DatabaseHelper myDbHelper = new DatabaseHelper(this);
 			myDbHelper.openDataBase();
-			Cursor c = myDbHelper.getDamageByID(LocationID);
+			Cursor c = myDbHelper.getDamageByID(locationId);
 			String GPS = c.getString(1)+", "+c.getString(2);
 			String aAddress = c.getString(3);
 			String notesText = c.getString(5);
@@ -132,9 +135,7 @@ public class AddNotesScreen extends Activity {
 		final Button saveDamage = (Button) findViewById(R.id.Save);
 		saveDamage.setOnClickListener (new View.OnClickListener() {
 			public void onClick(View v) {
-				DatabaseHelper myDbHelper = new DatabaseHelper(Context);    
-				myDbHelper.openDataBase();
-
+				DatabaseHelper myDbHelper = new DatabaseHelper(self);
 				MultiAutoCompleteTextView add = (MultiAutoCompleteTextView) findViewById(R.id.add_street_address);
 				Editable addText = add.getText();
 				address = addText.toString();
@@ -143,12 +144,15 @@ public class AddNotesScreen extends Activity {
 				Editable notesEdit = notesEditor.getText();
 				notes = notesEdit.toString();
 
-				myDbHelper.updateDamage(LocationID, "", "", address, "", notes, "Kyle", degree, ef);
-				Intent intent = new Intent(getBaseContext(),ReviewNotesScreen.class);
+				myDbHelper.openDataBase();				try {
+					myDbHelper.updateDamage(locationId, "", "", address, "", notes, "Kyle", degree, ef);				} finally {
+					myDbHelper.close();
+				}
+				Intent intent = new Intent(self, ReviewNotesScreen.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				startActivityForResult(intent,0);
+				intent.putExtra(ReviewNotesScreen.KEY_LOCATION_ID, locationId);
+				startActivity(intent);
 				finish();
-				myDbHelper.close();
 			}
 		});
 
@@ -156,12 +160,11 @@ public class AddNotesScreen extends Activity {
 		deleteDamage.setOnClickListener (new View.OnClickListener() {
 			public void onClick(View v) {
 
-				DatabaseHelper myDbHelper = new DatabaseHelper(Context);    
+				DatabaseHelper myDbHelper = new DatabaseHelper(self);
 				myDbHelper.openDataBase();
-				myDbHelper.deleteRecord( LocationID);
+				myDbHelper.deleteRecord( locationId);
 				myDbHelper.close();
-				((CurrentDamage) Context.getApplicationContext()).setLocationID(-1);
-				Intent intent = new Intent(getBaseContext(),HomeScreen.class);
+				Intent intent = new Intent(self, HomeScreen.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivityForResult(intent,0);
 				finish();
@@ -190,8 +193,9 @@ public class AddNotesScreen extends Activity {
 		final Button ReviewDamagePics = (Button) findViewById(R.id.add_all_pictures);
 		ReviewDamagePics.setOnClickListener (new View.OnClickListener() {
 			public void onClick(View v) {
-				Intent intent = new Intent(getBaseContext(),ImagesActivity.class);
+				Intent intent = new Intent(self, ImagesActivity.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				intent.putExtra(ImagesActivity.KEY_LOCATION_ID, locationId);
 				startActivityForResult(intent,0);
 			}
 		});
@@ -199,9 +203,9 @@ public class AddNotesScreen extends Activity {
 		final Button addDamagePics = (Button) findViewById(R.id.add_pictures);
 		addDamagePics.setOnClickListener (new View.OnClickListener() {
 			public void onClick(View v) {
-				//((CurrentDamage) Context.getApplicationContext()).setLocationID(LocationID);
-				Intent intent = new Intent(getBaseContext(),TakePictureScreen.class);
+				Intent intent = new Intent(self, TakePictureScreen.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				intent.putExtra(TakePictureScreen.KEY_LOCATION_ID, locationId);
 				startActivityForResult(intent,0);
 				finish();
 			}
@@ -211,14 +215,14 @@ public class AddNotesScreen extends Activity {
 
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState) {
-		savedInstanceState.putLong("ID", LocationID);
+		savedInstanceState.putLong(KEY_LOCATION_ID, locationId);
 		super.onSaveInstanceState(savedInstanceState);
 	}
 
 	@Override
 	public void onRestoreInstanceState(Bundle savedInstanceState) {
 		super.onRestoreInstanceState(savedInstanceState);
-		LocationID = savedInstanceState.getLong("ID");
+		locationId = savedInstanceState.getLong(KEY_LOCATION_ID);
 
 	}
 

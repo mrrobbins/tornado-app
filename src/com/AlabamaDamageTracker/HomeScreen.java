@@ -8,18 +8,20 @@ import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.location.LocationProvider;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 public class HomeScreen extends Activity {
 
+	private static final String TAG = "HomeScreen";
+	
+	private final HomeScreen self = this;
 	private LocationManager locationManager;
 	private LocationListener locationListener;
 	protected final Context Context = this;
-	private long LocationID;
 	private String latitude = null;
 	private String longitude = null;
 
@@ -47,27 +49,24 @@ public class HomeScreen extends Activity {
 		final Button newDamage = (Button) findViewById(R.id.home_new_location);
 		final Button reportedDamage = (Button) findViewById(R.id.home_reported_damage);
 
-
-		CurrentDamage info = ((CurrentDamage)getApplicationContext());
-		LocationID = info.getLocationID();
-
 		newDamage.setOnClickListener (new View.OnClickListener() {
 			public void onClick(View v) {
 				DatabaseHelper myDbHelper = new DatabaseHelper(Context);    
 				myDbHelper.openDataBase();
-				long locationID = myDbHelper.insertDamage(latitude, longitude, "", "", "", "", "", "", "");
-				((CurrentDamage) Context.getApplicationContext()).setLocationID(locationID);
-				//myDbHelper.updateGPS(latitude, LocationID, longitude);
+				long locationId = myDbHelper.insertDamage(latitude, longitude, "", "", "", "", "", "", "");
+				Log.d(TAG, "row: " + locationId);
+				//myDbHelper.updateGPS(latitude, locationId, longitude);
 				myDbHelper.close();
-				Intent intent = new Intent(getBaseContext(),TakePictureScreen.class);
+				Intent intent = new Intent(self, TakePictureScreen.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				intent.putExtra(TakePictureScreen.KEY_LOCATION_ID, locationId);
 				startActivityForResult(intent,0);
 			}
 		});
 
 		reportedDamage.setOnClickListener (new View.OnClickListener() {
 			public void onClick(View v) {
-				Intent intent = new Intent(getBaseContext(),ReportListActivity.class);
+				Intent intent = new Intent(self, ReportListActivity.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivityForResult(intent,0);
 			}

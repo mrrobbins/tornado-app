@@ -12,8 +12,8 @@ import android.os.Message;
 public class SplashScreen extends Activity implements Runnable{
 
 	public int X = 0;
-
-
+	
+	private final SplashScreen self = this;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -33,14 +33,14 @@ public class SplashScreen extends Activity implements Runnable{
 		} catch(SQLException sqle){
 			throw sqle;		 
 		}
-		Intent intent = new Intent(getBaseContext(),HomeScreen.class);
+		Intent intent = new Intent(this, HomeScreen.class);
 		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		startActivityForResult(intent,0);
 		finish();
 	}
 
 	public void onResume(Bundle savedInstanceState){
-		Intent intent = new Intent(getBaseContext(),HomeScreen.class);
+		Intent intent = new Intent(this, HomeScreen.class);
 		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		startActivityForResult(intent,0);
 		finish();
@@ -67,7 +67,7 @@ public class SplashScreen extends Activity implements Runnable{
 	private Handler handler = new Handler(){
 		@Override
 		public void handleMessage(Message msg){
-			Intent intent = new Intent(getBaseContext(),HomeScreen.class);
+			Intent intent = new Intent(self, HomeScreen.class);
 			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			startActivityForResult(intent,0);
 			finish();
@@ -83,7 +83,7 @@ public class SplashScreen extends Activity implements Runnable{
 	@Override
 	public void onRestoreInstanceState(Bundle savedInstanceState) {
 		super.onRestoreInstanceState(savedInstanceState);
-		Intent intent = new Intent(getBaseContext(),HomeScreen.class);
+		Intent intent = new Intent(this, HomeScreen.class);
 		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		startActivityForResult(intent,0);
 		finish();}

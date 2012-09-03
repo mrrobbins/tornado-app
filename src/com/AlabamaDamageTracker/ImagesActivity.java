@@ -25,6 +25,10 @@ import android.widget.ImageView;
 
 public class ImagesActivity extends Activity implements ImageSwitcher.ViewFactory {
 	
+	public static final String KEY_LOCATION_ID = "location id";
+	
+	private final ImagesActivity self = this;
+	
 	private ImageAdapter ia;
 	private Gallery gallery;
 	private ImageSwitcher switcher;
@@ -80,9 +84,8 @@ public class ImagesActivity extends Activity implements ImageSwitcher.ViewFactor
 		
 		public ImageAdapter() {
 			
-			CurrentDamage info = ((CurrentDamage) getApplicationContext());
-			locationId = info.getLocationID();
-			DatabaseHelper myDbHelper = new DatabaseHelper(getBaseContext());
+			locationId = getIntent().getLongExtra(KEY_LOCATION_ID, -1);
+			DatabaseHelper myDbHelper = new DatabaseHelper(self);
 			myDbHelper.openDataBase();
 			Cursor c = myDbHelper.getAllDamagePic(locationId);
 			

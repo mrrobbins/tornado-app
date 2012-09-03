@@ -13,18 +13,20 @@ import android.provider.MediaStore;
 import android.widget.Toast;
 
 public class TakePictureScreen extends Activity {
+	
+	public static final String KEY_LOCATION_ID = "location id";
 
 	private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 0;
-	private long LocationID;
+	private long locationId;
 
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		CurrentDamage info = ((CurrentDamage)getApplicationContext());
-		LocationID = info.getLocationID(); 
+		
+		locationId = getIntent().getLongExtra(KEY_LOCATION_ID, -1); 
 
-		takePicture(LocationID+"", LocationID);
+		takePicture(locationId+"", locationId);
 	}
 
 	public void takePicture(String filename, long id){
@@ -54,11 +56,9 @@ public class TakePictureScreen extends Activity {
 			if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
 				if (resultCode == RESULT_OK) {
 					String provider = null;
-					//((CurrentDamage) getBaseContext().getApplicationContext()).setLocationID(LocationID);
-					Intent intent = new Intent(getBaseContext(), AddNotesScreen.class);
-					//intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+					Intent intent = new Intent(this, AddNotesScreen.class);
+					intent.putExtra(AddNotesScreen.KEY_LOCATION_ID, locationId);
 					startActivityForResult(intent,0);
-					//finish();
 				}
 				else if (resultCode == RESULT_CANCELED) {
 					Toast.makeText(this, "Picture was not taken", Toast.LENGTH_SHORT);
