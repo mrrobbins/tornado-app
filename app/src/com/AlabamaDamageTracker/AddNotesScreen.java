@@ -1,32 +1,23 @@
 package com.AlabamaDamageTracker;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.File;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.speech.RecognizerIntent;
 import android.text.Editable;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 public class AddNotesScreen extends Activity {
@@ -37,14 +28,9 @@ public class AddNotesScreen extends Activity {
 	private String ef;
 	private String degree;
 	private String address;
-	private String notes;
+	private String notes;	private String imagePath;
 	
 	private final AddNotesScreen self = this;
-
-
-	private ListView mList;
-	private Handler mHandler;
-	private EditText mEdit;
 
 
 	@Override
@@ -60,11 +46,11 @@ public class AddNotesScreen extends Activity {
 			myDbHelper.openDataBase();
 			Cursor c = myDbHelper.getDamagePic(locationId);
 			ImageView i = (ImageView) findViewById(R.id.add_damage_image);
-			String picture = c.getString(0);
+			imagePath = c.getString(0);
 			BitmapFactory.Options options = new BitmapFactory.Options();
 			options.inSampleSize = 4;
 
-			Bitmap bitmap = BitmapFactory.decodeFile(picture, options);
+			Bitmap bitmap = BitmapFactory.decodeFile(imagePath, options);
 			i.setImageBitmap(bitmap);
 			c.close();  
 
@@ -170,12 +156,7 @@ public class AddNotesScreen extends Activity {
 
 		final Button ReviewDamagePics = (Button) findViewById(R.id.add_all_pictures);
 		ReviewDamagePics.setOnClickListener (new View.OnClickListener() {
-			public void onClick(View v) {
-				Intent intent = new Intent(self, ImagesActivity.class);
-				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				intent.putExtra(ImagesActivity.KEY_LOCATION_ID, locationId);
-				startActivityForResult(intent,0);
-			}
+			public void onClick(View v) {				Intent imageIntent = new Intent();				imageIntent.setAction(Intent.ACTION_VIEW);				imageIntent.setDataAndType(Uri.fromFile(new File(imagePath)), "image/*");				startActivity(imageIntent);			}
 		});
 
 		final Button addDamagePics = (Button) findViewById(R.id.add_pictures);
