@@ -111,13 +111,6 @@
 </ListView>
         	
    		 	</LinearLayout>
-   		 		<Button
-        		    android:id="@+id/button1"
-        		    android:layout_width="wrap_content"
-        		    android:layout_height="wrap_content"
-        		    android:layout_weight="1"
-        		    android:text="@string/Audio" >
-</Button>
     		<Button android:layout_width="match_parent" android:text="Delete Damage Location" android:layout_height="wrap_content" android:id="@+id/Delete"></Button>
    		 	<Button android:text="Save Damage Location" android:layout_height="wrap_content" android:id="@+id/Save" android:layout_width="match_parent"></Button>
 		</LinearLayout>

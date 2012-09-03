@@ -42,9 +42,6 @@ public class AddNotesScreen extends Activity {
 	private final AddNotesScreen self = this;
 
 
-	private static final String TAG = "VoiceRecognition";
-
-	private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
 	private ListView mList;
 	private Handler mHandler;
 	private EditText mEdit;
@@ -171,25 +168,6 @@ public class AddNotesScreen extends Activity {
 			}
 		});
 
-		final Button audio = (Button) findViewById(R.id.button1);
-		audio.setOnClickListener (new View.OnClickListener() {
-			public void onClick(View v) {
-
-				mHandler = new Handler();
-				mList = (ListView) findViewById(R.id.list);
-				PackageManager pm = getPackageManager();
-				List<ResolveInfo> activities = pm.queryIntentActivities(
-						new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH), 0);
-				refreshVoiceSettings();
-
-				startVoiceRecognitionActivity();
-			}
-
-		});
-
-
-
-
 		final Button ReviewDamagePics = (Button) findViewById(R.id.add_all_pictures);
 		ReviewDamagePics.setOnClickListener (new View.OnClickListener() {
 			public void onClick(View v) {
@@ -226,76 +204,5 @@ public class AddNotesScreen extends Activity {
 
 	}
 
-
-	private void startVoiceRecognitionActivity() {
-		Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-
-		// Specify the calling package to identify your application
-		intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getClass().getPackage().getName());
-
-		// Display an hint to the user about what he should say.
-		intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speech recognition demo");
-
-		// Given an hint to the recognizer about what the user is going to say
-		intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-				RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-
-		intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 5);
-		startActivityForResult(intent, VOICE_RECOGNITION_REQUEST_CODE);
-	}
-
-	private class SupportedLanguageBroadcastReceiver extends BroadcastReceiver {
-
-		@Override
-		public void onReceive(Context context, final Intent intent) {
-
-			final Bundle extra = getResultExtras(false);
-
-			if (getResultCode() != Activity.RESULT_OK) {
-				mHandler.post(new Runnable() {
-					//@Override
-					public void run() {
-						showToast("Error code:" + getResultCode());
-					}
-				});
-			}
-
-			if (extra == null) {
-				mHandler.post(new Runnable() {
-					//@Override
-					public void run() {
-						showToast("No extra");
-					}
-				});
-			}
-
-
-		}
-
-		private void showToast(String text) {
-			Toast.makeText(AddNotesScreen.this, text, 1000).show();
-		}	   		
-	}
-
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && resultCode == RESULT_OK) {
-			// Fill the list view with the strings the recognizer thought it could have heard
-			ArrayList<String> matches = data.getStringArrayListExtra(
-					RecognizerIntent.EXTRA_RESULTS);
-			String notes = matches.get(0);
-			TextView tv3 = (TextView) findViewById(R.id.add_notes_about_damage);
-			tv3.setText(notes);
-		}
-
-		super.onActivityResult(requestCode, resultCode, data);
-
-	}
-
-	private void refreshVoiceSettings() {
-
-		sendOrderedBroadcast(RecognizerIntent.getVoiceDetailsIntent(this), null,
-				new SupportedLanguageBroadcastReceiver(), null, Activity.RESULT_OK, null, null);
-	}
 
 }
