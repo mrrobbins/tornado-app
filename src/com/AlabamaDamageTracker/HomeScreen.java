@@ -1,7 +1,5 @@
 package com.AlabamaDamageTracker;
 
-
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -29,6 +27,10 @@ public class HomeScreen extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+	}
+	
+	public void onPause() {
+		locationManager.removeUpdates(locationListener);
 	}
 
 	public void onResume() {
