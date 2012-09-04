@@ -48,11 +48,8 @@ public class TakePictureScreen extends Activity {
 		myDbHelper.close();
 	}
 
-
-
-
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		try{	
+		try {	
 			if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
 				if (resultCode == RESULT_OK) {
 					String provider = null;
@@ -66,12 +63,12 @@ public class TakePictureScreen extends Activity {
 					Toast.makeText(this, "Picture was not taken", Toast.LENGTH_SHORT);
 				}
 			}
-		}catch(Exception e){}
+		} catch (Exception e) { }
 	}
 
 	public static File convertImageUriToFile(Uri imageUri, Activity activity)  {
 		Cursor cursor = null;
-		String [] proj={MediaStore.Images.Media.DATA, MediaStore.Images.Media._ID, MediaStore.Images.ImageColumns.ORIENTATION};
+		String [] proj = {MediaStore.Images.Media.DATA, MediaStore.Images.Media._ID, MediaStore.Images.ImageColumns.ORIENTATION};
 		cursor = activity.managedQuery( imageUri,
 				proj, // Which columns to return
 				null,       // WHERE clause; which rows to return (all rows)
@@ -86,7 +83,5 @@ public class TakePictureScreen extends Activity {
 		}				    
 		return null;
 	}
-
-
 
 }
