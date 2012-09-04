@@ -30,6 +30,7 @@ public class HomeScreen extends Activity {
 	}
 	
 	public void onPause() {
+		super.onPause();
 		locationManager.removeUpdates(locationListener);
 	}
 
