@@ -731,8 +731,7 @@ INSERT INTO tornado_degree_of_damage VALUES (
 ), (
   5,
   'SPB',
-  'Uplift of roof decking; significant loss of roof covering (>20%); 
-loss of rooftop HVAC equipment',
+  'Uplift of roof decking; significant loss of roof covering (>20%); loss of rooftop HVAC equipment',
   84,
   100,
   117
