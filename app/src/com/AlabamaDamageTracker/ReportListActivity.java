@@ -38,13 +38,13 @@ public final class ReportListActivity extends ListActivity {
 	public void onCreate(Bundle savedState) {
 		super.onCreate(savedState);
 		
-		DatabaseHelper dbHelper = new DatabaseHelper(this);    
+		DatabaseHelper dbHelper = new DatabaseHelper(this);
 		dbHelper.openDataBase();
 		try {
 			Cursor c = dbHelper.getAllLocations();
 			c.moveToFirst();
 			while (!c.isAfterLast()) {
-				long id = Long.parseLong(c.getString(0));
+				long id = Long.parseLong(c.getString(c.getColumnIndexOrThrow("_id")));
 				String address = c.getString(3);
 				places.add(new Place(id, address));
 				c.moveToNext();
