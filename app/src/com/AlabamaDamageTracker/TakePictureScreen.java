@@ -58,12 +58,13 @@ public class TakePictureScreen extends Activity {
 					startActivityForResult(intent,0);
 				}
 				else if (resultCode == RESULT_CANCELED) {
-					Toast.makeText(this, "Picture was not taken", Toast.LENGTH_SHORT);
+					Toast.makeText(this, "Picture was not taken", Toast.LENGTH_SHORT).show();
 				} else {
-					Toast.makeText(this, "Picture was not taken", Toast.LENGTH_SHORT);
+					Toast.makeText(this, "Picture was not taken", Toast.LENGTH_SHORT).show();
 				}
 			}
 		} catch (Exception e) { }
+		finish();
 	}
 
 	public static File convertImageUriToFile(Uri imageUri, Activity activity)  {
