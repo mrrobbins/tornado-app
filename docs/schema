@@ -1,0 +1,61 @@
+
+== Client (Sqlite3)  ==
+report:
+_id INTEGER PRIMARY KEY
+picture_path TEXT
+time INTEGER
+latitude REAL
+longitude REAL
+address TEXT
+location_description TEXT
+notes TEXT
+uploaded INTEGER
+damage_indicator INTEGER
+degree_of_damage INTEGER
+
+== Server (Relational) ==
+user:
+username TEXT PRIMARY KEY
+password TEXT
+first_name TEXT
+last_name TEXT
+admin INTEGER
+registration_time INTEGER
+organization TEXT
+email TEXT
+email_confirmed INTEGER
+phone TEXT
+
+report:
+id INTEGER PRIMARY KEY
+client_side_id INTEGER PRIMARY KEY
+user TEXT
+uploaded_time INTEGER
+time INTEGER
+picture_path TEXT
+latitude REAL
+longitude REAL
+address TEXT
+location_description TEXT
+notes TEXT
+
+== Server (static) ==
+
+tornado_ef_rating:
+ordinality INTEGER PRIMARY KEY
+lowest_windspeed INTEGER
+highest_windspeed INTEGER
+
+tornado_damge_indicator:
+ordinality INTEGER PRIMARY KEY
+description TEXT
+abbreviation TEXT
+
+tornado_degree_of_damage:
+ordinality INTEGER PRIMARY KEY
+indicator_abbreviation TEXT PRIMARY KEY
+description TEXT
+lowest_wind_speed INTEGER
+expected_windspeed INTEGER
+highest_windspeed INTEGER
+
