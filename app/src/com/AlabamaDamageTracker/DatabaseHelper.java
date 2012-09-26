@@ -184,6 +184,7 @@ public class DatabaseHelper {
 		
 		String filter = CN_ID + " = " + id;
 		Cursor c = database.query(TABLE_REPORT, null, filter, null, null, null, null, "1");
+		c.moveToFirst();
 		
 		int colId = c.getColumnIndex(CN_ID);
 		int colLat = c.getColumnIndex(CN_LAT);
@@ -310,6 +311,7 @@ public class DatabaseHelper {
 			null,
 			"1"
 		);
+		c.moveToFirst();
 		return c.getDouble(0);
 	}
 	
@@ -324,6 +326,7 @@ public class DatabaseHelper {
 			null,
 			"1"
 		);
+		c.moveToFirst();
 		return c.getLong(0);
 	}
 	
@@ -338,6 +341,7 @@ public class DatabaseHelper {
 			null,
 			"1"
 		);
+		c.moveToFirst();
 		return c.getString(0);
 	}
 	
@@ -352,6 +356,7 @@ public class DatabaseHelper {
 			null,
 			"1"
 		);
+		c.moveToFirst();
 		return c.getString(0);
 	}
 	
@@ -366,6 +371,7 @@ public class DatabaseHelper {
 			null,
 			"1"
 		);
+		c.moveToFirst();
 		return c.getString(0);
 	}
 	
@@ -380,6 +386,7 @@ public class DatabaseHelper {
 			null,
 			"1"
 		);
+		c.moveToFirst();
 		return c.getInt(0);
 	}
 	
@@ -394,6 +401,7 @@ public class DatabaseHelper {
 			null,
 			"1"
 		);
+		c.moveToFirst();
 		return c.getInt(0);
 	}
 	
@@ -406,6 +414,7 @@ public class DatabaseHelper {
 	public DamageIndicator getIndicator(long id) {
 		String filter = CN_ID + " = " + id;
 		Cursor c = database.query(TABLE_DI, null, filter, null, null, null, CN_ID, "1");
+		c.moveToFirst();
 		
 		int colId = c.getColumnIndex(CN_ID);
 		int colDesc = c.getColumnIndex(CN_DESC);
@@ -422,6 +431,7 @@ public class DatabaseHelper {
 	
 	public List<DamageIndicator> getIndicators() {
 		Cursor c = database.query(TABLE_DI, null, null, null, null, null, CN_ID);
+		c.moveToFirst();
 		List<DamageIndicator> indicators = new ArrayList<DamageIndicator>(c.getCount());
 		
 		int col_id = c.getColumnIndex(CN_ID);
@@ -445,6 +455,7 @@ public class DatabaseHelper {
 	public DegreeOfDamage getDegree(long id, String abbreviation) {
 		String filter = CN_ID + " = " + id + ", " + CN_INDIC_ABBREV + " = " + abbreviation;
 		Cursor c = database.query(TABLE_DOD, null, filter, null, null, null, null, "1");
+		c.moveToFirst();
 		
 		final int colId = c.getColumnIndex(CN_ID);
 		final int colDesc = c.getColumnIndex(CN_DESC);
@@ -466,6 +477,7 @@ public class DatabaseHelper {
 	
 	public List<DegreeOfDamage> getDegrees() {
 		Cursor c = database.query(TABLE_DOD, null, null, null, null, null, null);
+		c.moveToFirst();
 		
 		final int colId = c.getColumnIndex(CN_ID);
 		final int colDesc = c.getColumnIndex(CN_DESC);
