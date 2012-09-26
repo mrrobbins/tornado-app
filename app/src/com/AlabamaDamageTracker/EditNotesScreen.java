@@ -67,6 +67,7 @@ public class EditNotesScreen extends Activity {
 					dbh.close();
 				}
 			}
+			finish();
 		}
 	}
 
