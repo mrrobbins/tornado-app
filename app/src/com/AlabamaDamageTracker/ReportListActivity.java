@@ -16,13 +16,13 @@ import android.widget.ListView;
 public final class ReportListActivity extends ListActivity {	
 	private static final String TAG = "ReportList";
 	
-	private List<Place> places = new ArrayList<Place>();
+	private List<ListItem> places = new ArrayList<ListItem>();
 	private ListAdapter adapter;
 	
-	private class Place {
+	private class ListItem {
 		public final long id;
 		public final String name;
-				public Place(long id, String name) {
+				public ListItem(long id, String name) {
 			this.id = id;
 			this.name = name;
 		}
@@ -38,27 +38,21 @@ public final class ReportListActivity extends ListActivity {
 	public void onCreate(Bundle savedState) {
 		super.onCreate(savedState);
 		
-		DatabaseHelper dbHelper = new DatabaseHelper(this);
-		dbHelper.openDataBase();
+		DatabaseHelper dbh = DatabaseHelper.openReadOnly(this);
 		try {
-			Cursor c = dbHelper.getAllLocations();
-			c.moveToFirst();
-			while (!c.isAfterLast()) {
-				long id = Long.parseLong(c.getString(c.getColumnIndexOrThrow("_id")));
-				String address = c.getString(3);
-				places.add(new Place(id, address));
-				c.moveToNext();
+			for (Report r : dbh.getReports()) {
+				places.add(new ListItem(r.id, r.description));
 			}
 		} finally {
-			dbHelper.close();
+			dbh.close();
 		}
 		
-		adapter = new ArrayAdapter<Place>(this, android.R.layout.simple_list_item_1, places);
+		adapter = new ArrayAdapter<ListItem>(this, android.R.layout.simple_list_item_1, places);
 		setListAdapter(adapter);
 	}
 	
 	@Override
-	protected void onListItemClick(ListView l, View v, int position, long id) {		Place clicked = (Place) adapter.getItem(position);
+	protected void onListItemClick(ListView l, View v, int position, long id) {		ListItem clicked = (ListItem) adapter.getItem(position);
 		launchReport(clicked.id);
 	}
 	

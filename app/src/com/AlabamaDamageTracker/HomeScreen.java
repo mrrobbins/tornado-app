@@ -7,7 +7,6 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -19,9 +18,7 @@ public class HomeScreen extends Activity {
 	private final HomeScreen self = this;
 	private LocationManager locationManager;
 	private LocationListener locationListener;
-	protected final Context Context = this;
-	private String latitude = null;
-	private String longitude = null;
+	protected final HomeScreen context = this;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -54,15 +51,8 @@ public class HomeScreen extends Activity {
 
 		newDamage.setOnClickListener (new View.OnClickListener() {
 			public void onClick(View v) {
-				DatabaseHelper myDbHelper = new DatabaseHelper(Context);    
-				myDbHelper.openDataBase();
-				long locationId = myDbHelper.insertDamage(latitude, longitude, "", "", "", "", "", "", "");
-				Log.d(TAG, "row: " + locationId);
-				//myDbHelper.updateGPS(latitude, locationId, longitude);
-				myDbHelper.close();
 				Intent intent = new Intent(self, TakePictureScreen.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				intent.putExtra(TakePictureScreen.KEY_LOCATION_ID, locationId);
 				startActivityForResult(intent,0);
 			}
 		});
@@ -81,8 +71,6 @@ public class HomeScreen extends Activity {
 	public class MyLocationListener implements LocationListener {
 
 		public void onLocationChanged(Location loc) {
-			latitude = String.valueOf(loc.getLatitude());
-			longitude = String.valueOf(loc.getLongitude());
 		}
 
 

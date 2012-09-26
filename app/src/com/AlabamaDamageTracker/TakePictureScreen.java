@@ -1,88 +1,104 @@
 package com.AlabamaDamageTracker;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.ContentValues;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.widget.Toast;
 
 public class TakePictureScreen extends Activity {
 	
-	public static final String KEY_LOCATION_ID = "location id";
-
-	private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 0;
-	private long locationId;
-
+	private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 777;
+	private static final int MEDIA_TYPE_IMAGE = 1;
+	private static final int MEDIA_TYPE_VIDEO = 2;
+	private static final String TAG = "TakePictureScreen";
+	
+	private Uri imageUri = null;
+	
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		locationId = getIntent().getLongExtra(KEY_LOCATION_ID, -1); 
-
-		takePicture(locationId+"", locationId);
-	}
-
-	public void takePicture(String filename, long id){
-		DatabaseHelper myDbHelper = new DatabaseHelper(this);
-		myDbHelper.openDataBase();
-		ContentValues values = new ContentValues();
-		values.put(MediaStore.Images.Media.TITLE, filename);
-		values.put(MediaStore.Images.Media.DESCRIPTION,"Image capture by camera");
-		Uri imageUri = getContentResolver().insert(
-				MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+		imageUri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE);
+		
 		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 		intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-		intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);	   	
 		startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
-		File picture = convertImageUriToFile(imageUri,this);
-		String pic1 = picture.getAbsolutePath(); 
-		long p = myDbHelper.insertPicture(pic1, id);
-		myDbHelper.updatePic(p, id);
-		myDbHelper.close();
 	}
 
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		try {	
-			if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
-				if (resultCode == RESULT_OK) {
-					String provider = null;
-					Intent intent = new Intent(this, AddNotesScreen.class);
-					intent.putExtra(AddNotesScreen.KEY_LOCATION_ID, locationId);
-					startActivityForResult(intent,0);
-				}
-				else if (resultCode == RESULT_CANCELED) {
-					Toast.makeText(this, "Picture was not taken", Toast.LENGTH_SHORT).show();
-				} else {
-					Toast.makeText(this, "Picture was not taken", Toast.LENGTH_SHORT).show();
-				}
+		if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
+			if (resultCode == RESULT_OK) {
+				Intent intent = new Intent(this, EditNotesScreen.class);
+				intent.putExtra(EditNotesScreen.KEY_IMAGE_PATH, imageUri.toString());
+				startActivityForResult(intent, 0);
 			}
-		} catch (Exception e) { }
+			else if (resultCode == RESULT_CANCELED) {
+				Toast.makeText(this, "Picture was not taken", Toast.LENGTH_SHORT).show();
+			} else {
+				Toast.makeText(this, "Picture was not taken", Toast.LENGTH_SHORT).show();
+			}
+		}
 		finish();
 	}
+	
 
-	public static File convertImageUriToFile(Uri imageUri, Activity activity)  {
-		Cursor cursor = null;
-		String [] proj = {MediaStore.Images.Media.DATA, MediaStore.Images.Media._ID, MediaStore.Images.ImageColumns.ORIENTATION};
-		cursor = activity.managedQuery( imageUri,
-				proj, // Which columns to return
-				null,       // WHERE clause; which rows to return (all rows)
-				null,       // WHERE clause selection arguments (none)
-				null); // Order-by clause (ascending by name)
-		int file_ColumnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-		int orientation_ColumnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.ImageColumns.ORIENTATION);
-		if (cursor.moveToFirst()) {
-			@SuppressWarnings("unused")
-			String orientation =  cursor.getString(orientation_ColumnIndex);
-			return new File(cursor.getString(file_ColumnIndex));
-		}				    
-		return null;
+	/** Create a file Uri for saving an image or video */
+	private static Uri getOutputMediaFileUri(int type){
+	      return Uri.fromFile(getOutputMediaFile(type));
+	}
+
+	/** Create a File for saving an image or video */
+	private static File getOutputMediaFile(int type) {
+
+		File mediaStorageDir = new File(
+			Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+			"Damage Tracker"
+		);
+
+		if (!mediaStorageDir.exists()) {
+			if (!mediaStorageDir.mkdirs()) {
+				Log.d(TAG, "failed to create directory");
+				return null;
+			}
+		}
+
+		// Create a media file name
+		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss")
+				.format(new Date());
+		File mediaFile;
+		if (type == MEDIA_TYPE_IMAGE) {
+			
+			mediaFile = new File(
+				mediaStorageDir.getPath() +
+				File.separator +
+				"IMG_" +
+				timeStamp +
+				".jpg"
+			);
+			
+		} else if (type == MEDIA_TYPE_VIDEO) {
+			
+			mediaFile = new File(
+				mediaStorageDir.getPath() +
+				File.separator + "VID_" +
+				timeStamp + ".mp4"
+			);
+			
+		} else {
+			return null;
+		}
+
+		return mediaFile;
 	}
 
 }

@@ -5,328 +5,493 @@
 
 package com.AlabamaDamageTracker;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.IDN;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
-import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
-public class DatabaseHelper extends SQLiteOpenHelper{
-
-	private static String KEY_LAT = "gps_Lat";
-	private static String KEY_LONG = "gps_longi";
-	private static String KEY_STREETADDRESS = "street_address";
-	private static String KEY_NOTESA = "notes_Audio";
-	private static String KEY_NOTEST = "notes_Text";
-	private static String KEY_USERID = "user_ID";
-	private static String KEY_PICTUREID = "picture_ID";
-	private static String KEY_USERNAME = "userName";
-	private static String KEY_PICTURE = "picture";
-	private static String KEY_LOCATIONID = "location_id";
-	private static String KEY_DAMAGE = "Degree_of_Damage";
-	private static String KEY_EF = "EF_Rating";
-
-	private static String DATABASE_DAMAGENOTES = "DamageNotes";
-	private static String DATABASE_USERS = "Users";
-	private static String DATABSE_PICTURES = "Pictures";
+public class DatabaseHelper {
+	
+	public static final String CN_ID = "_id";
+	public static final String CN_DESC = "description";
+	
+	public static final String TABLE_REPORT = "report";
+	
+	public static final String CN_PIC_PATH = "picture_path";
+	public static final String CN_TIME = "time";
+	public static final String CN_LAT = "latitude";
+	public static final String CN_LONG = "longitude";
+	public static final String CN_ADDR = "address";
+	public static final String CN_LOC_DESC = "description";
+	public static final String CN_NOTES = "notes";
+	public static final String CN_UPLOADED = "uploaded";
+	public static final String CN_DI = "damge_indicator";
+	public static final String CN_DOD = "degree_of_damage";
+	
+	public static final String TABLE_DI = "tornado_damge_indicator";
+	
+	public static final String CN_ABBREV = "abbreviation";
+	
+	public static final String TABLE_DOD = "tornado_degree_of_damage";
+	public static final String CN_INDIC_ABBREV = "indicator_abbreviation";
+	public static final String CN_WIND_LB = "loweset_windspeed";
+	public static final String CN_WIND_EV = "expected_windspeed";
+	public static final String CN_WIND_UB = "highest_windspeed";
 
 	//The Android's default system path of your application database.
-	private static String DB_PATH = "/data/data/com.AlabamaDamageTracker/databases/";
+	private final File dataDirectory;
 
-	private static String DB_NAME = "DamageTracker";
+	public static final String DB_NAME = "db";
+	
+	private static final String TAG = "DatabaseHelper";
+	private static final ReentrantLock CREATION_LOCK = new ReentrantLock();
 
-	private SQLiteDatabase myDataBase; 
+	private SQLiteDatabase database; 
+	
+	private final Context context;
 
-	private final Context myContext;
+	private DatabaseHelper(Context context) {
 
-	/**
-	 * Constructor
-	 * Takes and keeps a reference of the passed context in order to access to the application assets and resources.
-	 * @param context
-	 */
-	public DatabaseHelper(Context context) {
-
-		super(context, DB_NAME, null, 1);
-		this.myContext = context;
-	}	
-
-	/**
-	 * Creates a empty database on the system and rewrites it with your own database.
-	 * */
-	public void createDataBase() throws IOException{
-
-		boolean dbExist = checkDataBase();
-
-		if(dbExist){
-			//do nothing - database already exist
-		}else{
-
-			//By calling this method and empty database will be created into the default system path
-			//of your application so we are gonna be able to overwrite that database with our database.
-			this.getReadableDatabase();
-
-			try {
-
-				copyDataBase();
-
-			} catch (IOException e) {
-
-				throw new Error("Error copying database");
-
+		this.context = context;
+		dataDirectory = context.getFilesDir();
+		
+		CREATION_LOCK.lock();
+		try {
+			if (!dbExists()) {
+				try {
+					copyDb();
+				} catch (IOException e) {
+					deleteDb();
+					Log.e(TAG, Log.getStackTraceString(e));
+				} catch (RuntimeException e) {
+					deleteDb();
+					throw e;
+				}
 			}
+		} finally {
+			CREATION_LOCK.unlock();
 		}
-
+		
 	}
-
-	/**
-	 * Check if the database already exist to avoid re-copying the file each time you open the application.
-	 * @return true if it exists, false if it doesn't
-	 */
-	private boolean checkDataBase(){
-
-		SQLiteDatabase checkDB = null;
-
-		try{
-			String myPath = DB_PATH + DB_NAME;
-			checkDB = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READONLY);
-
-		}catch(SQLiteException e){
-
-			//database does't exist yet.
-
+	
+	public static DatabaseHelper openReadOnly(Context context) {
+		DatabaseHelper helper = new DatabaseHelper(context);
+		helper.readOnly();
+		return helper;
+	}
+	
+	public static DatabaseHelper openReadWrite(Context context) {
+		DatabaseHelper helper = new DatabaseHelper(context);
+		helper.readWrite();
+		return helper;
+	}
+	
+	private void readOnly() {
+		database = SQLiteDatabase.openDatabase(
+			new File(dataDirectory, DB_NAME).getAbsolutePath(),
+			null,
+			SQLiteDatabase.OPEN_READONLY
+		);
+	}
+	
+	private void readWrite() {
+		database = SQLiteDatabase.openDatabase(
+			new File(dataDirectory, DB_NAME).getAbsolutePath(),
+			null,
+			SQLiteDatabase.OPEN_READWRITE
+		);
+	}
+	
+	private void copyDb() throws IOException {
+		File dbFile = new File(dataDirectory, DB_NAME);
+		
+		InputStream input = context.getAssets().open(DB_NAME);
+		try {
+			OutputStream output = new FileOutputStream(dbFile);
+			try {
+				
+				byte[] buffer = new byte[1024];
+				
+				for (int read = 0; read != -1; read = input.read(buffer)) {
+					output.write(buffer, 0, read);
+				}
+			} finally {
+				output.close();
+			}
+		} finally {
+			input.close();
 		}
+	}
+	
+	private boolean dbExists() {
+		return new File(dataDirectory, DB_NAME).exists();
+	}
+	
+	private void deleteDb() {
+		new File(dataDirectory, DB_NAME).delete();
+	}
+	
+	public void close() {
+		database.close();
+	}
 
-		if(checkDB != null){
-
-			checkDB.close();
-
+	public long insertReport(Report report) {
+		ContentValues cv = new ContentValues();
+		
+		if (report.id != null) cv.put(CN_ID, report.id);
+		
+		if (report.latitude != null) cv.put(CN_LAT, report.latitude);
+		else cv.put(CN_LAT, -1d);
+		
+		if (report.longitude != null) cv.put(CN_LONG, report.longitude);
+		else cv.put(CN_LONG, -1d);
+		
+		if (report.address != null) cv.put(CN_ADDR, report.address);
+		
+		if (report.notes != null) cv.put(CN_NOTES, report.notes);
+		else cv.put(CN_NOTES, "");
+		
+		if (report.damageIndicator != null) cv.put(CN_DI, report.damageIndicator);
+		else cv.put(CN_DI, -1);
+		
+		if (report.picturePath != null) cv.put(CN_PIC_PATH, report.picturePath);
+		
+		if (report.description != null) cv.put(CN_DESC, report.description);
+		else cv.put(CN_DESC, "");
+		
+		if (report.time != null) cv.put(CN_TIME, report.time);
+		else cv.put(CN_TIME, System.currentTimeMillis() / 1000L);
+		
+		if (report.uploaded != null) cv.put(CN_UPLOADED, report.uploaded);
+		else cv.put(CN_UPLOADED, false);
+		
+		return database.insert(TABLE_REPORT, null, cv);
+	}
+	
+	public Report getReport(long id) {
+		
+		String filter = CN_ID + " = " + id;
+		Cursor c = database.query(TABLE_REPORT, null, filter, null, null, null, null, "1");
+		
+		int colId = c.getColumnIndex(CN_ID);
+		int colLat = c.getColumnIndex(CN_LAT);
+		int colLang = c.getColumnIndex(CN_LONG);
+		int colAddr = c.getColumnIndex(CN_ADDR);
+		int colPicPath = c.getColumnIndex(CN_PIC_PATH);
+		int colUploaded = c.getColumnIndex(CN_UPLOADED);
+		int colNotes = c.getColumnIndex(CN_NOTES);
+		int colTime = c.getColumnIndex(CN_TIME);
+		int colDesc = c.getColumnIndex(CN_DESC);
+		int colDod = c.getColumnIndex(CN_DOD);
+		int colDi = c.getColumnIndex(CN_DI);
+		
+		Report report = new Report();
+		report.id = c.getInt(colId);
+		report.address = c.getString(colAddr);
+		report.notes = c.getString(colNotes);
+		report.notes = c.getString(colNotes);
+		report.latitude = c.getDouble(colLat);
+		report.longitude = c.getDouble(colLang);
+		report.picturePath = c.getString(colPicPath);
+		report.time = c.getInt(colTime);
+		report.uploaded = c.getInt(colUploaded) == 0 ? false : true;
+		report.description = c.getString(colDesc);
+		report.degreeOfDamage = c.getInt(colDod);
+		report.damageIndicator = c.getInt(colDi);
+		
+		return report;
+	}
+	
+	public List<Report> getReports() {
+		
+		Cursor c = database.query(TABLE_REPORT, null, null, null, null, null, null);
+		
+		int colId = c.getColumnIndex(CN_ID);
+		int colLat = c.getColumnIndex(CN_LAT);
+		int colLang = c.getColumnIndex(CN_LONG);
+		int colAddr = c.getColumnIndex(CN_ADDR);
+		int colPicPath = c.getColumnIndex(CN_PIC_PATH);
+		int colUploaded = c.getColumnIndex(CN_UPLOADED);
+		int colNotes = c.getColumnIndex(CN_NOTES);
+		int colTime = c.getColumnIndex(CN_TIME);
+		int colDesc = c.getColumnIndex(CN_DESC);
+		int colDod = c.getColumnIndex(CN_DOD);
+		int colDi = c.getColumnIndex(CN_DI);
+		
+		List<Report> reports = new ArrayList<Report>(c.getCount());
+		
+		while (!c.isAfterLast()) {
+			
+			Report report = new Report();
+			report.id = c.getInt(colId);
+			report.address = c.getString(colAddr);
+			report.notes = c.getString(colNotes);
+			report.notes = c.getString(colNotes);
+			report.latitude = c.getDouble(colLat);
+			report.longitude = c.getDouble(colLang);
+			report.picturePath = c.getString(colPicPath);
+			report.time = c.getInt(colTime);
+			report.uploaded = c.getInt(colUploaded) == 0 ? false : true;
+			report.description = c.getString(colDesc);
+			report.degreeOfDamage = c.getInt(colDod);
+			report.damageIndicator = c.getInt(colDi);
+			
+			reports.add(report);
+			c.moveToNext();
 		}
-
-		return checkDB != null ? true : false;
+		
+		return reports;
+		
 	}
-
-	/**
-	 * Copies your database from your local assets-folder to the just created empty database in the
-	 * system folder, from where it can be accessed and handled.
-	 * This is done by transfering bytestream.
-	 * */
-	private void copyDataBase() throws IOException{
-
-		//Open your local db as the input stream
-		InputStream myInput = myContext.getAssets().open(DB_NAME);
-
-		// Path to the just created empty db
-		String outFileName = DB_PATH + DB_NAME;
-
-		//Open the empty db as the output stream
-		OutputStream myOutput = new FileOutputStream(outFileName);
-
-		//transfer bytes from the inputfile to the outputfile
-		byte[] buffer = new byte[1024];
-		int length;
-		while ((length = myInput.read(buffer))>0){
-			myOutput.write(buffer, 0, length);
+	
+	public void setLattitude(long id, double newLatitude) {
+		ContentValues cv = new ContentValues();
+		cv.put(CN_LAT, newLatitude);
+		database.update(TABLE_REPORT, cv, "id = " + id, null);
+	}
+	
+	public void setLongitude(long id, double newLongitude) {
+		ContentValues cv = new ContentValues();
+		cv.put(CN_LONG, newLongitude);
+		database.update(TABLE_REPORT, cv, "id = " + id, null);
+	}
+	
+	public void setAddress(long id, String newAddress) {
+		ContentValues cv = new ContentValues();
+		cv.put(CN_ADDR, newAddress);
+		database.update(TABLE_REPORT, cv, "id = " + id, null);
+	}
+	
+	public void setNotes(long id, String newNotes) {
+		ContentValues cv = new ContentValues();
+		cv.put(CN_NOTES, newNotes);
+		database.update(TABLE_REPORT, cv, "id = " + id, null);
+	}
+	
+	public void setPhotoPath(long id, String newPhotoPath) {
+		ContentValues cv = new ContentValues();
+		cv.put(CN_PIC_PATH, newPhotoPath);
+		database.update(TABLE_REPORT, cv, "id = " + id, null);
+	}
+	
+	public void setIndicator(long id, int newDamageIndicator) {
+		ContentValues cv = new ContentValues();
+		cv.put(CN_DI, newDamageIndicator);
+		database.update(TABLE_REPORT, cv, "id = " + id, null);
+	}
+	
+	public void setDegree(long id, int newDegreeOfDamage) {
+		ContentValues cv = new ContentValues();
+		cv.put(CN_DOD, newDegreeOfDamage);
+		database.update(TABLE_REPORT, cv, "id = " + id, null);
+	}
+	
+	public double getLattitude(long id) {
+		Cursor c = database.query(
+			TABLE_REPORT,
+			new String[] {CN_LAT},
+			"id = " + String.valueOf(id),
+			null,
+			null,
+			null,
+			null,
+			"1"
+		);
+		return c.getDouble(0);
+	}
+	
+	public double getLongitude(long id) {
+		Cursor c = database.query(
+			TABLE_REPORT,
+			new String[] {CN_LONG},
+			"id = " + String.valueOf(id),
+			null,
+			null,
+			null,
+			null,
+			"1"
+		);
+		return c.getLong(0);
+	}
+	
+	public String getAddress(long id) {
+		Cursor c = database.query(
+			TABLE_REPORT,
+			new String[] {CN_ADDR},
+			"id = " + String.valueOf(id),
+			null,
+			null,
+			null,
+			null,
+			"1"
+		);
+		return c.getString(0);
+	}
+	
+	public String getNotes(long id) {
+		Cursor c = database.query(
+			TABLE_REPORT,
+			new String[] {CN_NOTES},
+			"id = " + String.valueOf(id),
+			null,
+			null,
+			null,
+			null,
+			"1"
+		);
+		return c.getString(0);
+	}
+	
+	public String getPhotoPath(long id) {
+		Cursor c = database.query(
+			TABLE_REPORT,
+			new String[] {CN_PIC_PATH},
+			"id = " + String.valueOf(id),
+			null,
+			null,
+			null,
+			null,
+			"1"
+		);
+		return c.getString(0);
+	}
+	
+	public int setIndicator(long id) {
+		Cursor c = database.query(
+			TABLE_REPORT,
+			new String[] {CN_DI},
+			"id = " + String.valueOf(id),
+			null,
+			null,
+			null,
+			null,
+			"1"
+		);
+		return c.getInt(0);
+	}
+	
+	public int getDegree(long id) {
+		Cursor c = database.query(
+			TABLE_REPORT,
+			new String[] {CN_DOD},
+			"id = " + String.valueOf(id),
+			null,
+			null,
+			null,
+			null,
+			"1"
+		);
+		return c.getInt(0);
+	}
+	
+	public boolean deleteReport(long id) {
+		int res = database.delete(TABLE_REPORT, "id = " + String.valueOf(id), null);
+		return (res == 0) ? false : true;
+	}
+	
+	
+	public DamageIndicator getIndicator(long id) {
+		String filter = CN_ID + " = " + id;
+		Cursor c = database.query(TABLE_DI, null, filter, null, null, null, CN_ID, "1");
+		
+		int colId = c.getColumnIndex(CN_ID);
+		int colDesc = c.getColumnIndex(CN_DESC);
+		int colAbbrev = c.getColumnIndex(CN_ABBREV);
+		
+			
+		DamageIndicator indicator = new DamageIndicator();
+		indicator.id = c.getLong(colId);
+		indicator.description = c.getString(colDesc);
+		indicator.abbreviation = c.getString(colAbbrev);
+			
+		return indicator;
+	}
+	
+	public List<DamageIndicator> getIndicators() {
+		Cursor c = database.query(TABLE_DI, null, null, null, null, null, CN_ID);
+		List<DamageIndicator> indicators = new ArrayList<DamageIndicator>(c.getCount());
+		
+		int col_id = c.getColumnIndex(CN_ID);
+		int col_desc = c.getColumnIndex(CN_DESC);
+		int col_abbrev = c.getColumnIndex(CN_ABBREV);
+		
+		while (!c.isAfterLast()) {
+			
+			DamageIndicator indicator = new DamageIndicator();
+			indicator.id = c.getLong(col_id);
+			indicator.description = c.getString(col_desc);
+			indicator.abbreviation = c.getString(col_abbrev);
+			
+			indicators.add(indicator);
+			
+			c.moveToNext();
 		}
-
-		//Close the streams
-		myOutput.flush();
-		myOutput.close();
-		myInput.close();
-
+		return indicators;
 	}
-
-	public void openDataBase() throws SQLException{
-
-		//Open the database
-		String myPath = DB_PATH + DB_NAME;
-		myDataBase = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READWRITE);
-
+	
+	public DegreeOfDamage getDegree(long id, String abbreviation) {
+		String filter = CN_ID + " = " + id + ", " + CN_INDIC_ABBREV + " = " + abbreviation;
+		Cursor c = database.query(TABLE_DOD, null, filter, null, null, null, null, "1");
+		
+		final int colId = c.getColumnIndex(CN_ID);
+		final int colDesc = c.getColumnIndex(CN_DESC);
+		final int colIndicAbbrev = c.getColumnIndex(CN_INDIC_ABBREV);
+		final int colWindLb = c.getColumnIndex(CN_WIND_LB);
+		final int colWindEv = c.getColumnIndex(CN_WIND_EV);
+		final int colWindUb = c.getColumnIndex(CN_WIND_UB);
+		
+		DegreeOfDamage degree = new DegreeOfDamage();
+		degree.id = c.getLong(colId);
+		degree.description = c.getString(colDesc);
+		degree.indicatorAbbreviation = c.getString(colIndicAbbrev);
+		degree.lowestWindspeed = c.getInt(colWindLb);
+		degree.expectedWindspeed = c.getInt(colWindEv);
+		degree.highestWindspeed = c.getInt(colWindUb);
+		
+		return degree;
 	}
-
-	@Override
-	public synchronized void close() {
-
-		if(myDataBase != null)
-			myDataBase.close();
-
-		super.close();
-
+	
+	public List<DegreeOfDamage> getDegrees() {
+		Cursor c = database.query(TABLE_DOD, null, null, null, null, null, null);
+		
+		final int colId = c.getColumnIndex(CN_ID);
+		final int colDesc = c.getColumnIndex(CN_DESC);
+		final int colIndicAbbrev = c.getColumnIndex(CN_INDIC_ABBREV);
+		final int colWindLb = c.getColumnIndex(CN_WIND_LB);
+		final int colWindEv = c.getColumnIndex(CN_WIND_EV);
+		final int colWindUb = c.getColumnIndex(CN_WIND_UB);
+		
+		List<DegreeOfDamage> degrees = new ArrayList<DegreeOfDamage>(c.getCount());
+		
+		while (!c.isAfterLast()) {
+			
+			DegreeOfDamage degree = new DegreeOfDamage();
+			
+			degree.id = c.getLong(colId);
+			degree.description = c.getString(colDesc);
+			degree.indicatorAbbreviation = c.getString(colIndicAbbrev);
+			degree.lowestWindspeed = c.getInt(colWindLb);
+			degree.expectedWindspeed = c.getInt(colWindEv);
+			degree.highestWindspeed = c.getInt(colWindUb);
+			
+			degrees.add(degree);
+			
+			c.moveToNext();
+		}
+		
+		
+		return degrees;
 	}
-
-	@Override
-	public void onCreate(SQLiteDatabase db) {
-
-	}
-
-	@Override
-	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		// TODO Auto-generated method stub
-
-	}
-
-
-	/*******
-	 *******
-	 Damage
-	 *******
-	 *******
-	 */
-
-	public long insertDamage(String lat, String longi, String address, String Audio, String Text, String UserID, String Pic, String Damage, String EF) 
-	{
-		ContentValues initialValues = new ContentValues();
-		initialValues.put(KEY_LAT, lat);
-		initialValues.put(KEY_LONG, longi);
-		initialValues.put(KEY_STREETADDRESS, address);
-		initialValues.put(KEY_NOTESA, Audio);
-		initialValues.put(KEY_NOTEST, Text);
-		initialValues.put(KEY_USERID, UserID);
-		initialValues.put(KEY_PICTUREID, Pic);
-		initialValues.put(KEY_EF, EF);
-		initialValues.put(KEY_DAMAGE, Damage);
-		return myDataBase.insert(DATABASE_DAMAGENOTES, null, initialValues);
-	}
-
-
-	public void updateDamage(long id, String lat, String longi, String address, String Audio, String Text, String UserID, String Damage, String EF){
-		ContentValues args = new ContentValues();
-		args.put(KEY_LAT, lat);
-		ContentValues args5 = new ContentValues();
-		args5.put(KEY_LONG, longi);
-		ContentValues args6 = new ContentValues();
-		args6.put(KEY_DAMAGE, Damage);
-		ContentValues args7 = new ContentValues();
-		args7.put(KEY_EF, EF);
-		ContentValues args1 = new ContentValues();
-		args1.put(KEY_STREETADDRESS, address);
-		ContentValues args2 = new ContentValues();
-		args2.put(KEY_NOTESA, Audio);
-		ContentValues args3 = new ContentValues();
-		args3.put(KEY_NOTEST, Text);
-		ContentValues args4 = new ContentValues();
-		args4.put(KEY_USERID, UserID);
-
-		myDataBase.update(DATABASE_DAMAGENOTES, args1, " _id like "+id,null);
-		myDataBase.update(DATABASE_DAMAGENOTES, args2, " _id like "+id,null);
-		myDataBase.update(DATABASE_DAMAGENOTES, args3, " _id like "+id,null);
-		myDataBase.update(DATABASE_DAMAGENOTES, args4, " _id like "+id,null);
-		//myDataBase.update(DATABASE_DAMAGENOTES, args5, " _id like "+id,null);
-		myDataBase.update(DATABASE_DAMAGENOTES, args6, " _id like "+id,null);
-		myDataBase.update(DATABASE_DAMAGENOTES, args7, " _id like "+id,null);
-
-		return;
-	}
-
-	public void updatePic( long pic, long id){
-		ContentValues args = new ContentValues();
-		args.put("picture_ID", pic);
-		myDataBase.update(DATABASE_DAMAGENOTES, args, " _id like "+id,null);
-	}
-
-	public Cursor getDamagePic(long id) 
-	{
-		String Z = "Select picture_ID from DamageNotes where _id like "+"'"+id+"'";
-		Cursor mCursor = myDataBase.rawQuery(Z, null);
-		if (mCursor != null) {
-			mCursor.moveToFirst();
-		}        
-
-		String x = mCursor.getString(0);
-		String Z1 = "Select picture from Pictures where _id like "+"'"+x+"'";
-		Cursor mCursor1 = myDataBase.rawQuery(Z1, null);
-		if (mCursor1 != null) {
-			mCursor1.moveToFirst();
-		} 
-		return mCursor1;
-	}
-
-
-	public void deleteRecord(long Id) 
-	{
-		myDataBase.delete(DATABASE_DAMAGENOTES, "_id like" + 
-				"'" + Id+ "'", null);
-		return; 		
-	}
-
-
-	public Cursor getAllLocations() 
-	{
-		String Z = "Select * from DamageNotes where picture_id is NOT NULL";
-		Cursor mCursor = myDataBase.rawQuery(Z, null);
-		if (mCursor != null) {
-			mCursor.moveToFirst();
-		}        	
-		return mCursor;
-	}
-
-
-	public Cursor getDamageByID(long id) 
-	{
-		String Z = "Select * from DamageNotes where _id like "+"'"+id+"'";
-		Cursor mCursor = myDataBase.rawQuery(Z, null);
-		if (mCursor != null) {
-			mCursor.moveToFirst();
-		}        	
-		return mCursor;
-	}
-
-	public void updateGPS(String Lat, long id, String Lon){
-		ContentValues initialValues = new ContentValues();
-		initialValues.put(KEY_LAT, Lat);
-		ContentValues initialValues1 = new ContentValues();
-		initialValues1.put(KEY_LONG, Lon);
-		myDataBase.update(DATABASE_DAMAGENOTES, initialValues, " _id like "+id, null);
-		myDataBase.update(DATABASE_DAMAGENOTES, initialValues1, " _id like "+id, null);
-	}
-
-	/*******
-	 *******
-	 USER
-	 *******
-	 *******
-	 */
-
-	public long insertUser(String User)
-	{
-		ContentValues initialValues = new ContentValues();
-		initialValues.put(KEY_USERNAME, User);
-		return myDataBase.insert(DATABASE_USERS,null,initialValues);
-	}
-
-	/*******
-	 *******
-	 *Picture
-	 *******
-	 *******
-	 */
-
-	public Cursor getAllDamagePic(long id) 
-	{
-		String Z = "Select picture from Pictures where location_id like "+"'"+id+"'";
-		Cursor mCursor = myDataBase.rawQuery(Z, null);
-		if (mCursor != null) {
-			mCursor.moveToFirst();
-		}        	
-		return mCursor;
-	}
-
-
-	public long insertPicture(String Picture, long id){
-		ContentValues initialValues = new ContentValues();
-		initialValues.put(KEY_PICTURE,Picture);
-		initialValues.put(KEY_LOCATIONID, id);
-		return myDataBase.insert(DATABSE_PICTURES, null, initialValues);
-	}
-
-
-
-
 
 }

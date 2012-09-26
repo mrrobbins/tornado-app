@@ -36,46 +36,22 @@ public class ReviewNotesScreen extends Activity implements OnInitListener {
 		setContentView(R.layout.review_notes_screen);
 
 		talker = new TextToSpeech(this,this);
-
-
-		DatabaseHelper myDbHelper = new DatabaseHelper(self);    
-		myDbHelper.openDataBase();
-		try {			Log.d(TAG, "locationId: " + locationId);
-			Cursor c = myDbHelper.getDamageByID(locationId);			try {				GPS = c.getString(1)+", "+c.getString(2);
-				address = c.getString(3);
-				notesText = c.getString(5);
-				userID = c.getString(6);
-				Damage = c.getString(8);
-				EF = c.getString(9);
-				TextView tv = (TextView) findViewById(R.id.Review_GPS);
-				tv.setText("GPS: "+ GPS);
-				tv.requestFocus();
-				TextView tv1 = (TextView) findViewById(R.id.review_EF);
-				tv1.setText("EF Rating: "+EF);
-				tv1.requestFocus();
-				TextView tv2 = (TextView) findViewById(R.id.review_Degree_of_Damage);
-				tv2.setText("Degree of Damage: "+Damage);
-				tv2.requestFocus();
-				TextView tv3 = (TextView) findViewById(R.id.review_notes);
-				tv3.setText("Notes: "+notesText);
-				tv3.requestFocus();
-				TextView tv4 = (TextView) findViewById(R.id.Review_StreetAdd);
-				tv4.setText("Street Address: "+ address);
-				tv4.requestFocus();			} finally {				c.close();			}
-
-			c = myDbHelper.getDamagePic(locationId);			try {
-				ImageView i = (ImageView) findViewById(R.id.ReviewImage);
-				String picture = c.getString(0);
-				BitmapFactory.Options options = new BitmapFactory.Options();
-				options.inSampleSize = 4;
-	
-				Bitmap bitmap = BitmapFactory.decodeFile(picture, options);				if (bitmap == null) i.setVisibility(View.GONE);
-				else i.setImageBitmap(bitmap);			} finally {
-				c.close();  			}
+		
+		DatabaseHelper dbh = DatabaseHelper.openReadOnly(self);
+		try {
+			Report report = dbh.getReport(locationId);
+			
+			ImageView i = (ImageView) findViewById(R.id.ReviewImage);
+			String picturePath = report.picturePath;
+			
+			BitmapFactory.Options options = new BitmapFactory.Options();
+			options.inSampleSize = 4;
+			Bitmap bitmap = BitmapFactory.decodeFile(picturePath, options);			if (bitmap == null) i.setVisibility(View.GONE);
+			else i.setImageBitmap(bitmap);			
 		} finally {
-			myDbHelper.close();
+			dbh.close();
 		}
-
+		
 		final Button HOME = (Button) findViewById(R.id.HOME);
 		HOME.setOnClickListener (new View.OnClickListener() {
 			public void onClick(View v) {
@@ -89,9 +65,9 @@ public class ReviewNotesScreen extends Activity implements OnInitListener {
 		final Button deleteDamage = (Button) findViewById(R.id.editDamage);
 		deleteDamage.setOnClickListener (new View.OnClickListener() {
 			public void onClick(View v) {
-				Intent intent = new Intent(self, AddNotesScreen.class);
+				Intent intent = new Intent(self, EditNotesScreen.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				intent.putExtra(AddNotesScreen.KEY_LOCATION_ID, locationId);
+				intent.putExtra(EditNotesScreen.KEY_REPORT_ID, locationId);
 				startActivityForResult(intent,0);
 				finish();
 			}
