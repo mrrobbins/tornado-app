@@ -1,11 +1,11 @@
 package com.AlabamaDamageTracker;
 
 import java.io.File;
+import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import android.app.Activity;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -39,7 +39,7 @@ public class TakePictureScreen extends Activity {
 		if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
 			if (resultCode == RESULT_OK) {
 				Intent intent = new Intent(this, EditNotesScreen.class);
-				intent.putExtra(EditNotesScreen.KEY_IMAGE_PATH, imageUri.toString());
+				intent.putExtra(EditNotesScreen.KEY_IMAGE_PATH, imageUri.getPath());
 				startActivityForResult(intent, 0);
 			}
 			else if (resultCode == RESULT_CANCELED) {

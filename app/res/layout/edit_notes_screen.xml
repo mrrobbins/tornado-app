@@ -112,8 +112,20 @@
         	
    		 	</LinearLayout>
    		 	
-    		<Button android:layout_width="match_parent" android:text="Delete Damage Location" android:layout_height="wrap_content" android:id="@+id/edit_notes_delete_button" />
-   		 	<Button android:text="Save Damage Location" android:layout_height="wrap_content" android:id="@+id/edit_notes_save_button" android:layout_width="match_parent" />
+    		<Button
+    		    android:layout_width="match_parent"
+    		    android:text="Delete Damage Location"
+    		    android:layout_height="wrap_content"
+    		    android:id="@+id/edit_notes_delete_button"
+    		    android:onClick="onButtonPress"
+   		    />
+   		 	<Button
+		 		android:text="Save Damage Location"
+		 		android:layout_height="wrap_content"
+		 		android:id="@+id/edit_notes_save_button"
+		 		android:layout_width="match_parent"
+    		    android:onClick="onButtonPress"
+	 		/>
    		 	
 		</LinearLayout>
     </ScrollView>
