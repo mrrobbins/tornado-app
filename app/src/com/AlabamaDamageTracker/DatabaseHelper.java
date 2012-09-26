@@ -33,10 +33,10 @@ public class DatabaseHelper {
 	public static final String CN_LAT = "latitude";
 	public static final String CN_LONG = "longitude";
 	public static final String CN_ADDR = "address";
-	public static final String CN_LOC_DESC = "description";
+	public static final String CN_LOC_DESC = "location_description";
 	public static final String CN_NOTES = "notes";
 	public static final String CN_UPLOADED = "uploaded";
-	public static final String CN_DI = "damge_indicator";
+	public static final String CN_DI = "damage_indicator";
 	public static final String CN_DOD = "degree_of_damage";
 	
 	public static final String TABLE_DI = "tornado_damge_indicator";
@@ -167,8 +167,8 @@ public class DatabaseHelper {
 		
 		if (report.picturePath != null) cv.put(CN_PIC_PATH, report.picturePath);
 		
-		if (report.description != null) cv.put(CN_DESC, report.description);
-		else cv.put(CN_DESC, "");
+		if (report.description != null) cv.put(CN_LOC_DESC, report.description);
+		else cv.put(CN_LOC_DESC, "");
 		
 		if (report.time != null) cv.put(CN_TIME, report.time);
 		else cv.put(CN_TIME, System.currentTimeMillis() / 1000L);
@@ -176,7 +176,8 @@ public class DatabaseHelper {
 		if (report.uploaded != null) cv.put(CN_UPLOADED, report.uploaded);
 		else cv.put(CN_UPLOADED, false);
 		
-		return database.insert(TABLE_REPORT, null, cv);
+		long b =  database.insert(TABLE_REPORT, null, cv);
+		return b;
 	}
 	
 	public Report getReport(long id) {
@@ -192,7 +193,7 @@ public class DatabaseHelper {
 		int colUploaded = c.getColumnIndex(CN_UPLOADED);
 		int colNotes = c.getColumnIndex(CN_NOTES);
 		int colTime = c.getColumnIndex(CN_TIME);
-		int colDesc = c.getColumnIndex(CN_DESC);
+		int colDesc = c.getColumnIndex(CN_LOC_DESC);
 		int colDod = c.getColumnIndex(CN_DOD);
 		int colDi = c.getColumnIndex(CN_DI);
 		
@@ -225,11 +226,12 @@ public class DatabaseHelper {
 		int colUploaded = c.getColumnIndex(CN_UPLOADED);
 		int colNotes = c.getColumnIndex(CN_NOTES);
 		int colTime = c.getColumnIndex(CN_TIME);
-		int colDesc = c.getColumnIndex(CN_DESC);
+		int colDesc = c.getColumnIndex(CN_LOC_DESC);
 		int colDod = c.getColumnIndex(CN_DOD);
 		int colDi = c.getColumnIndex(CN_DI);
 		
 		List<Report> reports = new ArrayList<Report>(c.getCount());
+		c.moveToFirst();
 		
 		while (!c.isAfterLast()) {
 			
