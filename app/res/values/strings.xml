@@ -3,12 +3,12 @@
     <string name="app_name">Alabama Damage Tracker</string>
     
     <string name="home_title">Alabama Damage Tracker</string>
-    <string name="home_new_location">Add a New Locaton</string>
-    <string name="home_reported_damage">Review Reported Damage</string>
+    <string name="home_new_location">Take Photo</string>
+    <string name="home_reported_damage">Edit/Upload</string>
     <string name="home_Continue">Continue Current Location</string>
     <string name="color_crimson">#DC143C</string>
     <string name="add_gps">Add GPS</string>
-    <string name="add_notes_title">Add Notes</string>
+    <string name="add_notes_title">Edit Photo</string>
     <string name="review_GPS">GPS</string>
     <string name="address">Address</string>
     <string name="damage_indicator">Damage Indicator</string>
