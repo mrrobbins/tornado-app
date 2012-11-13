@@ -1,31 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hello World, homeScreen!</string>
     <string name="app_name">Alabama Damage Tracker</string>
+    
     <string name="home_title">Alabama Damage Tracker</string>
     <string name="home_new_location">Add a New Locaton</string>
     <string name="home_reported_damage">Review Reported Damage</string>
     <string name="home_Continue">Continue Current Location</string>
     <string name="color_crimson">#DC143C</string>
+    <string name="add_gps">Add GPSC</string>
+    <string name="add_notes_title">Add Notes</string>
     <string name="review_GPS">GPS</string>
-    <string name="Address">Address</string>
-    <string name="rating">EF Rating</string>
-    <string name="Notes">Notes About Damage</string>
-    <string name="AllPictures">View All Pictures</string>
-    <string name="add_notes_title">Notes About Damage Location</string>
-    <string name="Add_GPS">GPS Location</string>
-    <string name="Enter_Damage_Notes">Enter Notes About Damage</string>
-    <string name="DamageAddress">Street Adress (if known)</string>
-    <string name="Audio">Audio Notes</string>
-     
-    		<string name="Review_Damage_Title">Damage Summary</string>
-    		<string name="Review_GPS">No GPS location Available</string>
-    		<string name="Review_Address">No Street Address Provided</string>
-    		<string name="review_EF">EF Rating</string>
-    		<string name="review_Degree_Of_Damage">No Degree of Damage Listed</string>
-    		<string name="review_text_notes">No Text Notes</string>
-    		<string name="Listen_to_Audio">Audio Notes</string>
-    		<string name="Return_Home">Home</string>
-    		<string name="review_edit_damage">Edit Damage</string>
-    		<string name="reviewUser">Users ID</string>
+    <string name="address">Address</string>
+    <string name="damage_indicator">Damage Indicator</string>
+    <string name="rating">Rating</string>
+    <string name="notes">Notes</string>
+    <string name="view_all_photos">View All Photos</string>
+    <string name="location_from_gps">Location From GPS</string>
+    <string name="street_address">Street Address</string>
+	<string name="Review_Damage_Title">Damage Summary</string>
+	<string name="Review_GPS">No GPS location Available</string>
+	<string name="Review_Address">No Street Address Provided</string>
+	<string name="review_EF">EF Rating</string>
+	<string name="review_Degree_Of_Damage">No Degree of Damage Listed</string>
+	<string name="review_text_notes">No Text Notes</string>
+	<string name="Listen_to_Audio">Audio Notes</string>
+	<string name="Return_Home">Home</string>
+	<string name="review_edit_damage">Edit Damage</string>
+	<string name="reviewUser">Users ID</string>
 </resources>

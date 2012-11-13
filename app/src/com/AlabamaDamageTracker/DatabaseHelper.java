@@ -406,7 +406,7 @@ public class DatabaseHelper {
 	}
 	
 	public boolean deleteReport(long id) {
-		int res = database.delete(TABLE_REPORT, "id = " + String.valueOf(id), null);
+		int res = database.delete(TABLE_REPORT, CN_ID + " = " + String.valueOf(id), null);
 		return (res == 0) ? false : true;
 	}
 	

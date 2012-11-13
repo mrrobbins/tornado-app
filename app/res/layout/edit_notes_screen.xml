@@ -11,18 +11,20 @@
         android:text="@string/add_notes_title"
         android:textColor="#DC143C"
         android:textAppearance="?android:attr/textAppearanceLarge" />
-    <ScrollView android:layout_height="wrap_content"  android:layout_width="match_parent">
+    <ScrollView android:layout_height="wrap_content" android:layout_width="match_parent">
         <LinearLayout
   			xmlns:android="http://schemas.android.com/apk/res/android"
   			android:orientation="vertical"
   			android:layout_width="match_parent"
-  			android:layout_height="match_parent" android:weightSum="1">
+  			android:layout_height="match_parent"
+  			android:weightSum="1"
+ 		>
 
     		<TextView
-    		    android:id="@+id/add_gps_location"
+    		    android:id="@+id/edit_report_gps_textbox"
     		    android:layout_width="wrap_content"
     		    android:layout_height="wrap_content"
-    		    android:text="@string/Add_GPS"
+    		    android:text="@string/add_gps"
     		    android:textAppearance="?android:attr/textAppearanceMedium"
    		    />
 
@@ -34,35 +36,27 @@
    		    />
 
     		<Button
-    		    android:id="@+id/add_pictures"
+    		    android:id="@+id/edit_report_new_photo_button"
     		    android:layout_width="141dp"
     		    android:layout_height="wrap_content"
     		    android:text="Add A New Picture"
    		    />
 
-    		<Button
-    		    android:id="@+id/add_all_pictures"
-    		    android:layout_width="141dp"
-    		    android:layout_height="wrap_content"
-    		    android:text="@string/AllPictures"
-   		    />
-
     		<TextView
-    		    android:id="@+id/TextView03"
     		    android:layout_width="wrap_content"
     		    android:layout_height="wrap_content"
-    		    android:text="@string/Address"
+    		    android:text="@string/address"
     		    android:textAppearance="?android:attr/textAppearanceMedium"
    		    />
 
-    		<MultiAutoCompleteTextView
-    		    android:id="@+id/add_street_address"
+    		<EditText
+    		    android:id="@+id/edit_report_address_edittext"
     		    android:layout_width="match_parent"
     		    android:layout_height="wrap_content"
+    		    android:inputType="text"
    		    />
 
     		<TextView
-    		    android:id="@+id/TextView02"
     		    android:layout_width="wrap_content"
     		    android:layout_height="wrap_content"
     		    android:text="@string/rating"
@@ -84,34 +78,25 @@
    		    />
     		
     		<Spinner
-    		    android:id="@+id/add_degree_of_damage"
+    		    android:id="@+id/edit_report_degree_of_damage_spinner"
     		    android:layout_width="154dp"
     		    android:layout_height="wrap_content"
    		    />
 
     		<TextView
-    		    android:id="@+id/TextView01"
     		    android:layout_width="wrap_content"
     		    android:layout_height="wrap_content"
-    		    android:text="@string/Notes"
+    		    android:text="@string/notes"
     		    android:textAppearance="?android:attr/textAppearanceMedium"
    		    />
     		
-    		<LinearLayout android:layout_height="wrap_content" android:id="@+id/linearLayout1" android:layout_width="match_parent">
 
-        		<MultiAutoCompleteTextView
-        		    android:id="@+id/add_notes_about_damage"
-        		    android:layout_width="match_parent"
-        		    android:layout_height="90dp"
-       		    />
-				<ListView
-				    android:id="@+id/list"
-				  	android:layout_width="fill_parent"
-				    android:layout_height="0dip"
-				    android:layout_weight="1" />
-        	
-   		 	</LinearLayout>
-   		 	
+       		<EditText
+       		    android:id="@+id/edit_report_note_edittext"
+       		    android:layout_width="match_parent"
+       		    android:layout_height="90dp"
+       		/>
+        		
     		<Button
     		    android:layout_width="match_parent"
     		    android:text="Delete Damage Location"
@@ -119,6 +104,7 @@
     		    android:id="@+id/edit_notes_delete_button"
     		    android:onClick="onButtonPress"
    		    />
+    		
    		 	<Button
 		 		android:text="Save Damage Location"
 		 		android:layout_height="wrap_content"

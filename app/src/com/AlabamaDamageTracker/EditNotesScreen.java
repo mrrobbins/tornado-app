@@ -87,10 +87,12 @@ public class EditNotesScreen extends Activity {
 		r.picturePath = imagePath;
 		DatabaseHelper dbh = DatabaseHelper.openReadWrite(self);
 		try {
-			dbh.insertReport(r);
+			if (dbId != null) dbh.deleteReport(dbId);
+			dbId = dbh.insertReport(r);
 		} finally {
 			dbh.close();
 		}
+		finish();
 	}
 	
 	private void loadFromDatabase(long reportId) {
