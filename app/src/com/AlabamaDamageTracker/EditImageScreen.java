@@ -87,6 +87,7 @@ public class EditImageScreen extends Activity {
 		Report r = new Report();
 		r.picturePath = imagePath;
 		r.address = getAddress();
+		r.notes = getNotes();
 		DatabaseHelper dbh = DatabaseHelper.openReadWrite(self);
 		try {
 			if (dbId != null) dbh.deleteReport(dbId);
@@ -103,6 +104,7 @@ public class EditImageScreen extends Activity {
 			Report source = dbh.getReport(reportId);
 			setImage(source.picturePath);
 			setAddress(source.address);
+			setNotes(source.notes);
 		} finally {
 			dbh.close();
 		}
@@ -115,6 +117,14 @@ public class EditImageScreen extends Activity {
 	
 	private void setAddress(String newAddress) {
 		((EditText) findViewById(R.id.edit_report_address_edittext)).setText(newAddress);
+	}
+	
+	private String getNotes() {
+		return ((EditText) findViewById(R.id.edit_report_note_edittext)).getText().toString();
+	}
+	
+	private void setNotes(String newNotes) {
+		((EditText) findViewById(R.id.edit_report_note_edittext)).setText(newNotes);
 	}
 	
 	private void setImage(String path) {
