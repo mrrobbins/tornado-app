@@ -65,9 +65,9 @@ public class ReviewNotesScreen extends Activity implements OnInitListener {
 		final Button deleteDamage = (Button) findViewById(R.id.editDamage);
 		deleteDamage.setOnClickListener (new View.OnClickListener() {
 			public void onClick(View v) {
-				Intent intent = new Intent(self, EditNotesScreen.class);
+				Intent intent = new Intent(self, EditImageScreen.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				intent.putExtra(EditNotesScreen.KEY_REPORT_ID, locationId);
+				intent.putExtra(EditImageScreen.KEY_REPORT_ID, locationId);
 				startActivityForResult(intent,0);
 				finish();
 			}

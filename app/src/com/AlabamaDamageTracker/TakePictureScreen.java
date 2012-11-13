@@ -37,8 +37,8 @@ public class TakePictureScreen extends Activity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
 			if (resultCode == RESULT_OK) {
-				Intent intent = new Intent(this, EditNotesScreen.class);
-				intent.putExtra(EditNotesScreen.KEY_IMAGE_PATH, imageUri.getPath());
+				Intent intent = new Intent(this, EditImageScreen.class);
+				intent.putExtra(EditImageScreen.KEY_IMAGE_PATH, imageUri.getPath());
 				startActivityForResult(intent, 0);
 			}
 			else if (resultCode == RESULT_CANCELED) {

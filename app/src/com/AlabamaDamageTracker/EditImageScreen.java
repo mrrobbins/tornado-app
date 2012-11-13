@@ -12,12 +12,12 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 
-public class EditNotesScreen extends Activity {
+public class EditImageScreen extends Activity {
 	
 	public static final String KEY_REPORT_ID = "report id";
 	public static final String KEY_IMAGE_PATH = "image path";
 	
-	private final EditNotesScreen self = this;
+	private final EditImageScreen self = this;
 	
 	private String imagePath;
 	

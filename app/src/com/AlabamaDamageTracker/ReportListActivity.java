@@ -50,8 +50,8 @@ public class ReportListActivity extends ListActivity {
 	}
 	
 	protected void onListItemClick(ListView l, View v, int position, long id) {		ListItem clicked = (ListItem) adapter.getItem(position);
-		Intent editReportIntent = new Intent(this, EditNotesScreen.class);
-		editReportIntent.putExtra(EditNotesScreen.KEY_REPORT_ID, clicked.id);
+		Intent editReportIntent = new Intent(this, EditImageScreen.class);
+		editReportIntent.putExtra(EditImageScreen.KEY_REPORT_ID, clicked.id);
 		startActivity(editReportIntent);
 	}
 	

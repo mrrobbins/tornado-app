@@ -22,7 +22,7 @@
             </intent-filter>
         </activity>
 		<activity android:name=".TakePictureScreen" android:windowSoftInputMode="stateHidden"></activity>
-		<activity android:name=".EditNotesScreen"></activity>
+		<activity android:name=".EditImageScreen"></activity>
 		<activity android:name=".ReviewNotesScreen"></activity>
 		<activity android:name=".ImagesActivity"></activity>
 		<activity android:name=".ReportListActivity"></activity>
