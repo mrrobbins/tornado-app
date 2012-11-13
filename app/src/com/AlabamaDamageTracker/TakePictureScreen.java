@@ -1,7 +1,6 @@
 package com.AlabamaDamageTracker;
 
 import java.io.File;
-import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
