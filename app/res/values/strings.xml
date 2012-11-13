@@ -7,7 +7,7 @@
     <string name="home_reported_damage">Review Reported Damage</string>
     <string name="home_Continue">Continue Current Location</string>
     <string name="color_crimson">#DC143C</string>
-    <string name="add_gps">Add GPSC</string>
+    <string name="add_gps">Add GPS</string>
     <string name="add_notes_title">Add Notes</string>
     <string name="review_GPS">GPS</string>
     <string name="address">Address</string>
