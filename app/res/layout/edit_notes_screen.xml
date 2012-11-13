@@ -35,13 +35,6 @@
     		    android:src="@drawable/icon"
    		    />
 
-    		<Button
-    		    android:id="@+id/edit_report_new_photo_button"
-    		    android:layout_width="141dp"
-    		    android:layout_height="wrap_content"
-    		    android:text="Add A New Picture"
-   		    />
-
     		<TextView
     		    android:layout_width="wrap_content"
     		    android:layout_height="wrap_content"
