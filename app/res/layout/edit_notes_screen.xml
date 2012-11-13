@@ -46,7 +46,7 @@
     		    android:id="@+id/edit_report_address_edittext"
     		    android:layout_width="match_parent"
     		    android:layout_height="wrap_content"
-    		    android:inputType="text"
+    		    android:inputType="textMultiLine"
    		    />
 
     		<TextView
@@ -87,7 +87,8 @@
        		<EditText
        		    android:id="@+id/edit_report_note_edittext"
        		    android:layout_width="match_parent"
-       		    android:layout_height="90dp"
+       		    android:layout_height="wrap_content"
+       		    android:inputType="textMultiLine"
        		/>
         		
     		<Button
