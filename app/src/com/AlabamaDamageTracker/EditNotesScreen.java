@@ -8,6 +8,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 
 
@@ -85,6 +86,7 @@ public class EditNotesScreen extends Activity {
 	public void saveToDatabase() {
 		Report r = new Report();
 		r.picturePath = imagePath;
+		r.address = getAddress();
 		DatabaseHelper dbh = DatabaseHelper.openReadWrite(self);
 		try {
 			if (dbId != null) dbh.deleteReport(dbId);
@@ -100,10 +102,19 @@ public class EditNotesScreen extends Activity {
 		try {
 			Report source = dbh.getReport(reportId);
 			setImage(source.picturePath);
+			setAddress(source.address);
 		} finally {
 			dbh.close();
 		}
 		
+	}
+	
+	private String getAddress() {
+		return ((EditText) findViewById(R.id.edit_report_address_edittext)).getText().toString();
+	}
+	
+	private void setAddress(String newAddress) {
+		((EditText) findViewById(R.id.edit_report_address_edittext)).setText(newAddress);
 	}
 	
 	private void setImage(String path) {
