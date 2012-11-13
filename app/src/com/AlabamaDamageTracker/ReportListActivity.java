@@ -15,7 +15,7 @@ import android.widget.ListView;
 public class ReportListActivity extends ListActivity {	
 	private static final String TAG = "ReportList";
 	
-	private List<ListItem> places = new ArrayList<ListItem>();
+	private List<ListItem> places;
 	private ListAdapter adapter;
 	
 	private class ListItem {
@@ -36,6 +36,18 @@ public class ReportListActivity extends ListActivity {
 	public void onCreate(Bundle savedState) {
 		super.onCreate(savedState);
 		
+		adapter = getAdapter();
+		setListAdapter(adapter);
+	}
+	
+	protected void onResume() {
+		super.onResume();
+		adapter = getAdapter();
+		setListAdapter(adapter);
+	}
+	
+	private ArrayList<ListItem> getPlaces() {
+		ArrayList<ListItem> places = new ArrayList<ListItem>();
 		DatabaseHelper dbh = DatabaseHelper.openReadOnly(this);
 		try {
 			for (Report r : dbh.getReports()) {
@@ -44,9 +56,14 @@ public class ReportListActivity extends ListActivity {
 		} finally {
 			dbh.close();
 		}
+		return places;
 		
-		adapter = new ArrayAdapter<ListItem>(this, android.R.layout.simple_list_item_1, places);
-		setListAdapter(adapter);
+	}
+	
+	private ListAdapter getAdapter() {
+		ArrayList<ListItem> places = getPlaces();
+		ListAdapter adapter = new ArrayAdapter<ListItem>(this, android.R.layout.simple_list_item_1, places);
+		return adapter;
 	}
 	
 	protected void onListItemClick(ListView l, View v, int position, long id) {		ListItem clicked = (ListItem) adapter.getItem(position);
