@@ -1,5 +1,10 @@
 package com.AlabamaDamageTracker;
 
+import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HttpContext;
+
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
@@ -36,6 +41,9 @@ public class UploadService extends IntentService {
 		DatabaseHelper dbh = DatabaseHelper.openReadOnly(self);
 		try {
 			Report source = dbh.getReport(reportId);
+			HttpClient client = new DefaultHttpClient();
+			HttpContext context = new BasicHttpContext();
+			
 		} finally {
 			dbh.close();
 		}
