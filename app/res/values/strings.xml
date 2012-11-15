@@ -27,4 +27,6 @@
 	<string name="Return_Home">Home</string>
 	<string name="review_edit_damage">Edit Damage</string>
 	<string name="reviewUser">Users ID</string>
+	<string name="latitude">Latitude</string>
+	<string name="longitude">Longitude</string>
 </resources>

@@ -158,6 +158,7 @@ public class DatabaseHelper {
 		else cv.put(CN_LONG, -1d);
 		
 		if (report.address != null) cv.put(CN_ADDR, report.address);
+		else cv.put(CN_ADDR, "");
 		
 		if (report.notes != null) cv.put(CN_NOTES, report.notes);
 		else cv.put(CN_NOTES, "");
@@ -180,6 +181,24 @@ public class DatabaseHelper {
 		return b;
 	}
 	
+	public boolean updateReport(Report report) {
+		ContentValues cv = new ContentValues();
+		
+		if (report.notes != null) cv.put(CN_NOTES, report.notes);
+		else cv.put(CN_NOTES, "");
+		
+		if (report.address != null) cv.put(CN_ADDR, report.address);
+		else cv.put(CN_ADDR, "");
+		
+		if (report.damageIndicator != null) cv.put(CN_DI, report.damageIndicator);
+		else cv.put(CN_DI, -1);
+		
+		String filter = CN_ID + " = " + report.id;
+		int updateCnt = database.update(TABLE_REPORT, cv, filter, null);
+		
+		return updateCnt == 1 ? true : false;
+	}
+	
 	public Report getReport(long id) {
 		
 		String filter = CN_ID + " = " + id;
@@ -199,14 +218,14 @@ public class DatabaseHelper {
 		int colDi = c.getColumnIndex(CN_DI);
 		
 		Report report = new Report();
-		report.id = c.getInt(colId);
+		report.id = c.getLong(colId);
 		report.address = c.getString(colAddr);
 		report.notes = c.getString(colNotes);
 		report.notes = c.getString(colNotes);
 		report.latitude = c.getDouble(colLat);
 		report.longitude = c.getDouble(colLang);
 		report.picturePath = c.getString(colPicPath);
-		report.time = c.getInt(colTime);
+		report.time = c.getLong(colTime);
 		report.uploaded = c.getInt(colUploaded) == 0 ? false : true;
 		report.description = c.getString(colDesc);
 		report.degreeOfDamage = c.getInt(colDod);
@@ -237,14 +256,14 @@ public class DatabaseHelper {
 		while (!c.isAfterLast()) {
 			
 			Report report = new Report();
-			report.id = c.getInt(colId);
+			report.id = c.getLong(colId);
 			report.address = c.getString(colAddr);
 			report.notes = c.getString(colNotes);
 			report.notes = c.getString(colNotes);
 			report.latitude = c.getDouble(colLat);
 			report.longitude = c.getDouble(colLang);
 			report.picturePath = c.getString(colPicPath);
-			report.time = c.getInt(colTime);
+			report.time = c.getLong(colTime);
 			report.uploaded = c.getInt(colUploaded) == 0 ? false : true;
 			report.description = c.getString(colDesc);
 			report.degreeOfDamage = c.getInt(colDod);

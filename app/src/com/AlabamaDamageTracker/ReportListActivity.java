@@ -57,7 +57,6 @@ public class ReportListActivity extends ListActivity {
 			dbh.close();
 		}
 		return places;
-		
 	}
 	
 	private ListAdapter getAdapter() {
@@ -71,6 +70,4 @@ public class ReportListActivity extends ListActivity {
 		editReportIntent.putExtra(EditImageScreen.KEY_REPORT_ID, clicked.id);
 		startActivity(editReportIntent);
 	}
-	
-
 }

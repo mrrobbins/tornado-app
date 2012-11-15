@@ -2,9 +2,9 @@ package com.AlabamaDamageTracker;
 
 public class Report { // Data type for a report
 	
-	public Integer id = null;
+	public Long id = null;
 	public String picturePath = null;
-	public Integer time = null;
+	public Long time = null;
 	public Double latitude = null;
 	public Double longitude = null;
 	public String address = null;
