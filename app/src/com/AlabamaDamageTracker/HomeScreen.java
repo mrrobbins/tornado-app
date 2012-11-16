@@ -95,7 +95,8 @@ public class HomeScreen extends Activity {
 						String server = ((EditText) v.findViewById(R.id.server_address)).getText().toString();
 						String email = ((EditText) v.findViewById(R.id.user_email)).getText().toString();
 						String password = ((EditText) v.findViewById(R.id.user_password)).getText().toString();
-						Intent serviceIntent = new Intent(UploadService.ACTION_UPLOAD_IMAGES);
+						Intent serviceIntent = new Intent(self, UploadService.class);
+						serviceIntent.setAction(UploadService.ACTION_UPLOAD_IMAGES);
 						serviceIntent.putExtra(UploadService.KEY_SERVER_ADDRESS, server);
 						serviceIntent.putExtra(UploadService.KEY_EMAIL, email);
 						serviceIntent.putExtra(UploadService.KEY_PASSWORD, password);
