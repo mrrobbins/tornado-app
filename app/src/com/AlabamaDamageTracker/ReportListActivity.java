@@ -1,6 +1,8 @@
 package com.AlabamaDamageTracker;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import android.app.AlertDialog;
@@ -8,8 +10,6 @@ import android.app.ListActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.AndroidCharacter;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -56,7 +56,10 @@ public class ReportListActivity extends ListActivity {
 		DatabaseHelper dbh = DatabaseHelper.openReadOnly(this);
 		try {
 			for (Report r : dbh.getReports()) {
-				places.add(new ListItem(r.id, r.description));
+				String timeStamp;
+				if (r.time == 0) timeStamp = "";
+				else timeStamp = new SimpleDateFormat("E M/d/y H:M:s").format(new Date(r.time));
+				places.add(new ListItem(r.id, timeStamp));
 			}
 		} finally {
 			dbh.close();
