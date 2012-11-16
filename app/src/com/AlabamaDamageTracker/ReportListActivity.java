@@ -40,7 +40,6 @@ public class ReportListActivity extends ListActivity {
 	
 	public void onCreate(Bundle savedState) {
 		super.onCreate(savedState);
-		setContentView(R.layout.report_list_layout);
 		
 		adapter = getAdapter();
 		setListAdapter(adapter);
@@ -77,36 +76,4 @@ public class ReportListActivity extends ListActivity {
 		startActivity(editReportIntent);
 	}
 	
-	public void uploadClicked(View clickedButton) {
-		AlertDialog.Builder b = new AlertDialog.Builder(this);
-		b.setTitle("Enter Login Details");
-		LayoutInflater inflater = getLayoutInflater();
-		
-		final View v = inflater.inflate(R.layout.user_login_screen, null);
-		b.setView(v);
-		
-		b.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int which) { }
-		});
-		
-		b.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-			
-			public void onClick(DialogInterface dialog, int which) {
-				if (places == null) return;
-				for (ListItem li : places) {
-					String server = ((EditText) v.findViewById(R.id.server_address)).getText().toString();
-					String email = ((EditText) v.findViewById(R.id.user_email)).getText().toString();
-					String password = ((EditText) v.findViewById(R.id.user_password)).getText().toString();
-					Intent serviceIntent = new Intent(UploadService.ACTION_UPLOAD_IMAGES);
-					serviceIntent.putExtra(UploadService.KEY_SERVER_ADDRESS, server);
-					serviceIntent.putExtra(UploadService.KEY_EMAIL, email);
-					serviceIntent.putExtra(UploadService.KEY_PASSWORD, password);
-					startService(serviceIntent);
-				}
-			}
-		});
-		
-		
-		b.show();
-	}
 }
