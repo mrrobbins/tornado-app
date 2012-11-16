@@ -33,7 +33,7 @@ public class TakePictureScreen extends Activity {
 		
 		Date now = new Date();
 		// gets unix time in seconds
-		timeCaptured = now.getTime() / 1000L;
+		timeCaptured = now.getTime();
 		image = getOutputMediaFile(now);
 		
 		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);

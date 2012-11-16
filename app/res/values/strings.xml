@@ -8,12 +8,12 @@
     <string name="home_Continue">Continue Current Location</string>
     <string name="color_crimson">#DC143C</string>
     <string name="add_gps">Add GPS</string>
-    <string name="add_notes_title">Edit Photo</string>
+    <string name="info_title">Add Information</string>
     <string name="review_GPS">GPS</string>
-    <string name="address">Address</string>
-    <string name="damage_indicator">Damage Indicator</string>
-    <string name="rating">Rating</string>
-    <string name="notes">Notes</string>
+    <string name="info_address">Address:</string>
+    <string name="info_degree">Degree of Damage</string>
+    <string name="info_indicator">Damage Indicator:</string>
+    <string name="info_notes">Notes:</string>
     <string name="view_all_photos">View All Photos</string>
     <string name="location_from_gps">Location From GPS</string>
     <string name="street_address">Street Address</string>
@@ -27,9 +27,9 @@
 	<string name="Return_Home">Home</string>
 	<string name="review_edit_damage">Edit Damage</string>
 	<string name="reviewUser">Users ID</string>
-	<string name="latitude">Latitude</string>
-	<string name="longitude">Longitude</string>
 	<string name="server_address">Server Address</string>
 	<string name="email_address">Email Address</string>
 	<string name="password">Password</string>
+	<string name="info_latitude">Latitude:</string>
+	<string name="info_longitude">Longitude:</string>
 </resources>

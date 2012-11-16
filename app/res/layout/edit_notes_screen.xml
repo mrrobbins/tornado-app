@@ -14,7 +14,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/add_notes_title"
+        android:text="@string/info_title"
         android:textColor="#DC143C"
         android:textAppearance="?android:attr/textAppearanceLarge"
      />
@@ -26,16 +26,8 @@
   			android:weightSum="1"
  		>
 
-    		<TextView
-    		    android:id="@+id/edit_report_gps_textbox"
-    		    android:layout_width="wrap_content"
-    		    android:layout_height="wrap_content"
-    		    android:text="@string/add_gps"
-    		    android:textAppearance="?android:attr/textAppearanceMedium"
-   		    />
-
     		<ImageView
-    		    android:id="@+id/add_damage_image"
+    		    android:id="@+id/info_image"
     		    android:layout_width="match_parent"
     		    android:layout_height="186dp"
     		    android:src="@drawable/icon"
@@ -45,37 +37,33 @@
     		<TextView
     		    android:layout_width="wrap_content"
     		    android:layout_height="wrap_content"
-    		    android:text="@string/latitude"
+    		    android:id="@+id/info_time"
     		    android:textAppearance="?android:attr/textAppearanceMedium"
     		/>
-    		<EditText
-    		    android:id="@+id/edit_report_latitude"
-    		    android:layout_width="match_parent"
-    		    android:layout_height="wrap_content"
-    		    android:inputType="textMultiLine"
-   		    />
     		
     		<TextView
     		    android:layout_width="wrap_content"
     		    android:layout_height="wrap_content"
-    		    android:text="@string/longitude"
+    		    android:text="@string/info_latitude"
+    		    android:id="@+id/info_latitude"
     		    android:textAppearance="?android:attr/textAppearanceMedium"
     		/>
-    		<EditText
-    		    android:id="@+id/edit_report_longitude"
-    		    android:layout_width="match_parent"
+    		<TextView
+    		    android:layout_width="wrap_content"
     		    android:layout_height="wrap_content"
-    		    android:inputType="textMultiLine"
-   		    />
+    		    android:text="@string/info_longitude"
+    		    android:id="@+id/info_longitude"
+    		    android:textAppearance="?android:attr/textAppearanceMedium"
+    		/>
     		
     		<TextView
     		    android:layout_width="wrap_content"
     		    android:layout_height="wrap_content"
-    		    android:text="@string/address"
+    		    android:text="@string/info_address"
     		    android:textAppearance="?android:attr/textAppearanceMedium"
    		    />
     		<EditText
-    		    android:id="@+id/edit_report_address_edittext"
+    		    android:id="@+id/info_address"
     		    android:layout_width="match_parent"
     		    android:layout_height="wrap_content"
     		    android:inputType="textMultiLine"
@@ -84,26 +72,23 @@
     		<TextView
     		    android:layout_width="wrap_content"
     		    android:layout_height="wrap_content"
-    		    android:text="@string/rating"
+    		    android:text="@string/info_indicator"
     		    android:textAppearance="?android:attr/textAppearanceMedium"
    		    />
-
     		<Spinner
-    		    android:id="@+id/edit_report_damage_indicator"
+    		    android:id="@+id/info_indicator"
     		    android:layout_width="154dp"
     		    android:layout_height="wrap_content"
    		    />
 
     		<TextView
-    		    android:id="@+id/add_ef_rating1"
     		    android:layout_width="wrap_content"
     		    android:layout_height="wrap_content"
-    		    android:text="Degree of Damage"
+    		    android:text="@string/info_degree"
     		    android:textAppearance="?android:attr/textAppearanceMedium" 
    		    />
-    		
     		<Spinner
-    		    android:id="@+id/edit_report_damage_degree"
+    		    android:id="@+id/info_degree"
     		    android:layout_width="154dp"
     		    android:layout_height="wrap_content"
    		    />
@@ -111,13 +96,11 @@
     		<TextView
     		    android:layout_width="wrap_content"
     		    android:layout_height="wrap_content"
-    		    android:text="@string/notes"
+    		    android:text="@string/info_notes"
     		    android:textAppearance="?android:attr/textAppearanceMedium"
    		    />
-    		
-
        		<EditText
-       		    android:id="@+id/edit_report_note_edittext"
+       		    android:id="@+id/info_notes"
        		    android:layout_width="match_parent"
        		    android:layout_height="wrap_content"
        		    android:inputType="textMultiLine"
@@ -127,16 +110,16 @@
     		    android:layout_width="match_parent"
     		    android:text="Delete Damage Location"
     		    android:layout_height="wrap_content"
-    		    android:id="@+id/edit_notes_delete_button"
-    		    android:onClick="onDelete"
+    		    android:id="@+id/info_delete_btn"
+    		    android:onClick="onDeleteBtn"
    		    />
     		
    		 	<Button
 		 		android:text="Save Damage Location"
 		 		android:layout_height="wrap_content"
-		 		android:id="@+id/edit_notes_save_button"
+		 		android:id="@+id/info_save_btn"
 		 		android:layout_width="match_parent"
-    		    android:onClick="onSave"
+    		    android:onClick="onSaveBtn"
 	 		/>
    		 	
 		</LinearLayout>
