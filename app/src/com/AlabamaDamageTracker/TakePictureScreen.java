@@ -37,6 +37,9 @@ public class TakePictureScreen extends Activity {
 		image = getOutputMediaFile(now);
 		
 		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+		String output = Uri.fromFile(image).toString();
+		
+		Log.d(TAG, output);
 		intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(image));
 		startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
 	}

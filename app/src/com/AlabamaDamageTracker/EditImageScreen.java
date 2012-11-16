@@ -4,15 +4,15 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -26,6 +26,8 @@ public class EditImageScreen extends Activity {
 	public static final String KEY_IMAGE_TIME = "image time";
 	public static final String KEY_IMAGE_LATITUDE = "image lat";
 	public static final String KEY_IMAGE_LONGITUDE = "image long";
+	
+	private static final String TAG = "EditImageScreen";
 	
 	private final EditImageScreen self = this;
 	
@@ -49,6 +51,7 @@ public class EditImageScreen extends Activity {
 			loadFromDatabase(dbId);
 		} else {
 			// The report is not in the database
+			((Button) findViewById(R.id.info_delete_btn)).setText("Cancel");
 			loadFromBundle(intent);
 		}
 	}
@@ -147,7 +150,7 @@ public class EditImageScreen extends Activity {
 		this.time = time;
 		String timeStamp;
 		if (time == 0) timeStamp = "";
-		else timeStamp = new SimpleDateFormat("E M/d/y H:M:s").format(new Date(time));
+		else timeStamp = new SimpleDateFormat("E M/d/y H:m:s").format(new Date(time));
 		
 		((TextView) findViewById(R.id.info_time)).setText(timeStamp);
 	}
@@ -204,8 +207,8 @@ public class EditImageScreen extends Activity {
 		ImageView i = (ImageView) findViewById(R.id.info_image);
 		BitmapFactory.Options options = new BitmapFactory.Options();
 		options.inSampleSize = 4;
-
-		Bitmap bitmap = BitmapFactory.decodeFile(path);
+		Bitmap bitmap = BitmapFactory.decodeFile(path, options);
+		if (bitmap == null) Log.d(TAG, "bitmap is null");
 		i.setImageBitmap(bitmap);
 	}
 }

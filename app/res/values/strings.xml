@@ -33,4 +33,6 @@
 	<string name="home_info">Web Portal</string>
 	<string name="home_upload">Upload</string>
 	<string name="home_title">Damage Tracker</string>
+	<string name="info_save">Save</string>
+	<string name="info_delete">Delete</string>
 </resources>
