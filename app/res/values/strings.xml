@@ -29,4 +29,7 @@
 	<string name="reviewUser">Users ID</string>
 	<string name="latitude">Latitude</string>
 	<string name="longitude">Longitude</string>
+	<string name="server_address">Server Address</string>
+	<string name="email_address">Email Address</string>
+	<string name="password">Password</string>
 </resources>

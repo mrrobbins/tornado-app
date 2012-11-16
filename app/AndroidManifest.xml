@@ -26,5 +26,6 @@
 		<activity android:name=".ReviewNotesScreen"></activity>
 		<activity android:name=".ImagesActivity"></activity>
 		<activity android:name=".ReportListActivity"></activity>
+		<service android:name="UploadService"></service>
     </application>
 </manifest>
