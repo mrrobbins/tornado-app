@@ -21,7 +21,7 @@ import com.loopj.android.http.RequestParams;
 
 public class UploadService extends IntentService {
 
-	public static final String ACTION_UPLOAD_IMAGE = "upload_image";
+	public static final String ACTION_UPLOAD_IMAGES = "upload_images";
 
 	public static final String KEY_REPORT_IDS = "report_ids";
 	public static final String KEY_SERVER_ADDRESS = "server_address";

@@ -1,15 +1,18 @@
 package com.AlabamaDamageTracker;
 
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
 import android.app.Activity;
-import android.content.Context;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
+import android.widget.EditText;
 
 public class HomeScreen extends Activity {
 
@@ -51,9 +54,59 @@ public class HomeScreen extends Activity {
 		
 		uploadDamage.setOnClickListener (new View.OnClickListener() {
 			
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
+			public void onClick(View clicked) {
 				
+				DatabaseHelper dbh = DatabaseHelper.openReadOnly(self);
+				
+				List<Report> reports = new LinkedList<Report>();
+				try {
+					reports = dbh.getReports();
+				} finally {
+					dbh.close();
+				}
+				
+				final long[] ids = new long[reports.size()];
+				
+				{
+					int idx = 0;
+					Iterator<Report> iter = reports.iterator();
+					while (iter.hasNext()) {
+						Report r = iter.next();
+						ids[idx] = r.id;
+						idx++;
+					}
+				}
+				
+
+				AlertDialog.Builder b = new AlertDialog.Builder(self);
+				b.setTitle("Enter Login Details");
+				LayoutInflater inflater = getLayoutInflater();
+
+				final View v = inflater.inflate(R.layout.user_login_screen, null);
+				b.setView(v);
+
+				b.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) { }
+				});
+
+				b.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+
+					public void onClick(DialogInterface dialog, int which) {
+						String server = ((EditText) v.findViewById(R.id.server_address)).getText().toString();
+						String email = ((EditText) v.findViewById(R.id.user_email)).getText().toString();
+						String password = ((EditText) v.findViewById(R.id.user_password)).getText().toString();
+						Intent serviceIntent = new Intent(UploadService.ACTION_UPLOAD_IMAGES);
+						serviceIntent.putExtra(UploadService.KEY_SERVER_ADDRESS, server);
+						serviceIntent.putExtra(UploadService.KEY_EMAIL, email);
+						serviceIntent.putExtra(UploadService.KEY_PASSWORD, password);
+						serviceIntent.putExtra(UploadService.KEY_REPORT_IDS, ids);
+						startService(serviceIntent);
+					}
+				});
+
+
+				b.show();
+
 			}
 		});
 	}
