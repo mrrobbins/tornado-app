@@ -1,80 +1,211 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#FFFFFF"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
     android:orientation="vertical"
-    android:weightSum="1" >
-
-    <TextView
-        android:id="@+id/home_Title"
-        android:layout_width="fill_parent"
-        android:layout_height="59dp"
-        android:layout_gravity="top"
-        android:text="@string/home_title"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="#DC143C"
-        android:textStyle="bold" >
-    </TextView>
-
+    android:background="#555555">
+    <TextView 
+    	android:layout_width="fill_parent"   	
+    	android:layout_height="100dp"
+    	android:gravity="center"
+    	android:text="@string/home_title"
+        android:textSize="40sp"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+    />
+    
+<!--     <ImageView -->
+<!--         android:layout_width="fill_parent" -->
+<!--         android:layout_height="100dp" -->
+<!--         android:layout_gravity="top" -->
+<!--         android:src="@drawable/tornado"  -->
+<!--         android:contentDescription="logo"/> -->
+        
     <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:orientation="horizontal" >
-
+        android:layout_height="fill_parent" >
+        
         <ImageView
-            android:layout_width="0dp"
             android:layout_height="fill_parent"
-            android:layout_weight="1"
-            tools:ignore="ContentDescription" />
+            android:layout_width="0dp"
+            android:layout_weight="1" />
 
         <LinearLayout
-            android:layout_width="0dp"
             android:layout_height="fill_parent"
+            android:layout_width="0dp"
             android:layout_weight="4"
             android:orientation="vertical" >
-
+            
             <ImageView
-                android:layout_width="fill_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
-                tools:ignore="NestedWeights,ContentDescription" />
+                android:layout_width="fill_parent"
+                android:layout_weight="1" />
 
             <Button
-                android:id="@+id/home_new_location"
+                android:id="@+id/launch_capture"
+                android:background="@layout/button_selector"
+                style="@style/home_screen"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/home_new_location"
-                android:textSize="20dp" />
-
+                android:layout_gravity="center"
+                android:onClick="buttonHandler"
+                android:padding="10dp"
+                android:drawableLeft="@drawable/camera"
+                android:text="@string/home_capture" 
+                android:textSize="20sp" />
+            
             <ImageView
-                android:layout_width="fill_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
-                tools:ignore="ContentDescription" />
+                android:layout_width="fill_parent"
+                android:layout_weight="1" />
 
             <Button
-                android:id="@+id/home_reported_damage"
+                android:id="@+id/launch_reports"
+                android:background="@layout/button_selector"
+                style="@style/home_screen"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/home_reported_damage"
-                android:textSize="20dp" />
-
+                android:layout_gravity="center"
+                android:onClick="buttonHandler"
+                android:padding="10dp"
+                android:drawableLeft="@drawable/disk"
+                android:text="@string/home_reports" 
+                android:textSize="20sp"/>
+            
             <ImageView
-                android:layout_width="fill_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
-                tools:ignore="ContentDescription" />
+                android:layout_width="fill_parent"
+                android:layout_weight="1" />
 
+            <Button
+                android:id="@+id/launch_upload"
+                android:background="@layout/button_selector"
+                android:layout_width="fill_parent"
+                style="@style/home_screen"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:onClick="buttonHandler"
+                android:padding="10dp"
+                android:drawableLeft="@drawable/upload"
+                android:text="@string/home_upload" 
+                android:textSize="20sp"/>
+            
+            <ImageView
+                android:layout_height="0dp"
+                android:layout_width="fill_parent"
+                android:layout_weight="2" />
+            
+            <Button
+                android:id="@+id/launch_about_info"
+                android:background="@layout/button_selector"
+                android:layout_width="wrap_content"
+                style="@style/home_screen"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:onClick="buttonHandler"
+                android:padding="10dp"
+                android:text="@string/home_info" 
+                android:textSize="15sp"/>
+            
+            
+            <ImageView
+                android:layout_height="0dp"
+                android:layout_width="fill_parent"
+                android:layout_weight="1" />
+            
         </LinearLayout>
-
+        
         <ImageView
-            android:layout_width="0dp"
             android:layout_height="fill_parent"
-            android:layout_weight="1"
-            tools:ignore="ContentDescription" />
+            android:layout_width="0dp"
+            android:layout_weight="1" />
 
-    </LinearLayout>
-
+	</LinearLayout>
+    
 </LinearLayout>
+
+
+
+
+
+<!-- <?xml version="1.0" encoding="utf-8"?> -->
+<!-- <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" -->
+<!--     xmlns:tools="http://schemas.android.com/tools" -->
+<!--     android:layout_width="match_parent" -->
+<!--     android:layout_height="match_parent" -->
+<!--     android:background="#FFFFFF" -->
+<!--     android:orientation="vertical" -->
+<!--     android:weightSum="1" > -->
+<!--  -->
+<!--     <TextView -->
+<!--         android:id="@+id/home_Title" -->
+<!--         android:layout_width="fill_parent" -->
+<!--         android:layout_height="59dp" -->
+<!--         android:layout_gravity="top" -->
+<!--         android:text="@string/home_title" -->
+<!--         android:textAppearance="?android:attr/textAppearanceLarge" -->
+<!--         android:textColor="#DC143C" -->
+<!--         android:textStyle="bold" > -->
+<!--     </TextView> -->
+<!--  -->
+<!--     <LinearLayout -->
+<!--         android:layout_width="fill_parent" -->
+<!--         android:layout_height="fill_parent" -->
+<!--         android:orientation="horizontal" > -->
+<!--  -->
+<!--         <ImageView -->
+<!--             android:layout_width="0dp" -->
+<!--             android:layout_height="fill_parent" -->
+<!--             android:layout_weight="1" -->
+<!--             tools:ignore="ContentDescription" /> -->
+<!--  -->
+<!--         <LinearLayout -->
+<!--             android:layout_width="0dp" -->
+<!--             android:layout_height="fill_parent" -->
+<!--             android:layout_weight="4" -->
+<!--             android:orientation="vertical" > -->
+<!--  -->
+<!--             <ImageView -->
+<!--                 android:layout_width="fill_parent" -->
+<!--                 android:layout_height="0dp" -->
+<!--                 android:layout_weight="1" -->
+<!--                 tools:ignore="NestedWeights,ContentDescription" /> -->
+<!--  -->
+<!--             <Button -->
+<!--                 android:id="@+id/home_new_location" -->
+<!--                 android:layout_width="fill_parent" -->
+<!--                 android:layout_height="wrap_content" -->
+<!--                 android:text="@string/home_new_location" -->
+<!--                 android:textSize="20dp" /> -->
+<!--  -->
+<!--             <ImageView -->
+<!--                 android:layout_width="fill_parent" -->
+<!--                 android:layout_height="0dp" -->
+<!--                 android:layout_weight="1" -->
+<!--                 tools:ignore="ContentDescription" /> -->
+<!--  -->
+<!--             <Button -->
+<!--                 android:id="@+id/home_reported_damage" -->
+<!--                 android:layout_width="fill_parent" -->
+<!--                 android:layout_height="wrap_content" -->
+<!--                 android:text="@string/home_reported_damage" -->
+<!--                 android:textSize="20dp" /> -->
+<!--  -->
+<!--             <ImageView -->
+<!--                 android:layout_width="fill_parent" -->
+<!--                 android:layout_height="0dp" -->
+<!--                 android:layout_weight="1" -->
+<!--                 tools:ignore="ContentDescription" /> -->
+<!--  -->
+<!--         </LinearLayout> -->
+<!--  -->
+<!--         <ImageView -->
+<!--             android:layout_width="0dp" -->
+<!--             android:layout_height="fill_parent" -->
+<!--             android:layout_weight="1" -->
+<!--             tools:ignore="ContentDescription" /> -->
+<!--  -->
+<!--     </LinearLayout> -->
+<!--  -->
+<!-- </LinearLayout> -->

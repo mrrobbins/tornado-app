@@ -29,9 +29,9 @@ public class HomeScreen extends Activity {
 	public void onResume() {
 		super.onResume();
 		setContentView(R.layout.home_screen);
-
-		final Button newDamage = (Button) findViewById(R.id.home_new_location);
-		final Button viewDamage = (Button) findViewById(R.id.home_reported_damage);
+		final Button newDamage = (Button) findViewById(R.id.launch_capture);
+		final Button viewDamage = (Button) findViewById(R.id.launch_reports);
+		final Button uploadDamage = (Button) findViewById(R.id.launch_upload);
 
 		newDamage.setOnClickListener (new View.OnClickListener() {
 			public void onClick(View v) {
@@ -46,6 +46,14 @@ public class HomeScreen extends Activity {
 				Intent intent = new Intent(self, ReportListActivity.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivityForResult(intent,0);
+			}
+		});
+		
+		uploadDamage.setOnClickListener (new View.OnClickListener() {
+			
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				
 			}
 		});
 	}
