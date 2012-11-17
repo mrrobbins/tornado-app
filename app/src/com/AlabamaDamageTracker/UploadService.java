@@ -3,6 +3,7 @@ package com.AlabamaDamageTracker;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -54,10 +55,10 @@ public class UploadService extends IntentService {
 	protected void updateOngoingNotification(int successful, int failed, int total) {
 		String tickerText = "Upladeding photos (" + (successful + failed) + "/" + total + ")";
 		Notification n = new Notification(
-				android.R.drawable.ic_notification_overlay,
-				tickerText,
-				System.currentTimeMillis()
-				);
+			android.R.drawable.ic_notification_overlay,
+			tickerText,
+			System.currentTimeMillis()
+		);
 
 		startForeground(ongoingNotificationCode, n);
 
@@ -68,10 +69,10 @@ public class UploadService extends IntentService {
 		final String message = "Uploaded " + successful + "/" + total + " (" + failed + " failed)";
 		NotificationManager nm = (NotificationManager) getSystemService(Service.NOTIFICATION_SERVICE);
 		Notification n = new Notification(
-				android.R.drawable.ic_notification_overlay,
-				message,
-				System.currentTimeMillis()
-				);
+			android.R.drawable.ic_notification_overlay,
+			message,
+			System.currentTimeMillis()
+		);
 		nm.notify(doneNotificationCode++, n);
 	}
 	
@@ -80,16 +81,16 @@ public class UploadService extends IntentService {
 		final String message = "Upload failed: Invalid username or password";
 		NotificationManager nm = (NotificationManager) getSystemService(Service.NOTIFICATION_SERVICE);
 		Notification n = new Notification(
-				android.R.drawable.ic_notification_overlay,
-				message,
-				System.currentTimeMillis()
-				);
+			android.R.drawable.ic_notification_overlay,
+			message,
+			System.currentTimeMillis()
+		);
 		nm.notify(doneNotificationCode++, n);
 	}
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
-		Log.d(TAG, "upload");
+		Log.d(TAG, "Handle New Intent");
 
 		final long[] ids = intent.getLongArrayExtra(KEY_REPORT_IDS);
 
@@ -117,102 +118,126 @@ public class UploadService extends IntentService {
 			return;
 		}
 
-		RequestParams params = new RequestParams();
-		params.put("email", email);
-		params.put("password", password);
+		client.setTimeout(1000);
 		
-		final Semaphore doneWithIntent = new Semaphore(0);
-
-		client.post(server+loginPath, params, new AsyncHttpResponseHandler() {
-
-			public void onSuccess(byte[] binaryData) {
-				ArrayList<Report> reports = new ArrayList<Report>(ids.length);
-				DatabaseHelper dbh = DatabaseHelper.openReadOnly(self);
-				try {
-					for (long reportId : ids) reports.add(dbh.getReport(reportId));
-				} finally {
-					dbh.close();
-				}
-
-
-				final Semaphore s = new Semaphore(1);
-				final ReadWriteLock rw = new ReentrantReadWriteLock();
-
-				final int total = ids.length;
-				final Wrapper<Integer> successfulCount = new Wrapper<Integer>(0);
-				final Wrapper<Integer> failedCount = new Wrapper<Integer>(0);
-
-				for (Report r : reports) {
-					RequestParams params = new RequestParams();
-					try {
-						params.put(r.picturePath, new File(r.picturePath));
-					} catch(FileNotFoundException fnf) {
-						rw.writeLock().lock();
-						try {
-							failedCount.wrapped++;
-						} finally {
-							rw.writeLock().unlock();
-						}
-					}
-					client.post(server+uploadPath, params, new AsyncHttpResponseHandler() {
-
-						public void onSuccess(byte[] binaryData) {
-							rw.writeLock().lock();
-							try {
-								successfulCount.wrapped++;
-								s.release();
-							} finally {
-								rw.writeLock().unlock();
-							}
-						}
-						public void onFailure(Throwable error, byte[] binaryData)  {
-							rw.writeLock().lock();
-							try {
-								failedCount.wrapped++;
-								s.release();
-							} finally {
-								rw.writeLock().unlock();
-							}
-						}
-
-					});
-				}
-
-				while(true) {
-					try {
-						s.acquire();
-					} catch (InterruptedException ie) {
-						stopForeground(true);
-						return;
-					}
-					rw.readLock().lock();
-					try {
-						if (failedCount.wrapped + successfulCount.wrapped == total) {
-							showDoneNotification(successfulCount.wrapped, failedCount.wrapped, total);
-							stopForeground(true);
-							doneWithIntent.release();
-							return;
-						}
-						updateOngoingNotification(successfulCount.wrapped, failedCount.wrapped, total);
-					} finally {
-						rw.readLock().unlock();
-					}
-				}
-
-
-
-			}
-
-			public void onFailure(Throwable error, byte[] binaryData) {
-				showBadLoginNotification();
-				doneWithIntent.release();
-			}
-
-		});
+		PostResult loginResult = new Login(server, email, password).execute();
+		Log.d(TAG, "Login Status: " + loginResult.toString());
 		
-		try {
-			doneWithIntent.acquire();
-		} catch (InterruptedException ie) { }
+	}
+	
+	private enum PostResult {
+		SUCCESS, FAILURE, TIMEOUT
+	}
+	
+	private class SynchronousPoster {
+		
+		private final AsyncHttpClient client;
+		
+		public SynchronousPoster(AsyncHttpClient client) {
+			this.client = client;
+		}
+		
+		public PostResult post(String url, RequestParams params) {
+			Wrapper<PostResult> result = new Wrapper<PostResult>(null);
+			Semaphore postAttemptComplete = new Semaphore(0);
+			client.post(self, url, params, new PostHandler(postAttemptComplete, result));
+			try {
+				postAttemptComplete.acquire();
+				return result.wrapped;
+			} catch (InterruptedException ie) {
+				return PostResult.TIMEOUT;
+			}
+		}
+		
+		private class PostHandler extends AsyncHttpResponseHandler {
+			
+			private final Wrapper<PostResult> result;
+			private final Semaphore postAttempt;
+			
+			public PostHandler(Semaphore postAttemptComplete, Wrapper<PostResult> result) {
+				this.postAttempt = postAttemptComplete;
+				this.result = result;
+			}
+			
+			@Override
+			public void onSuccess(String content) {
+				result.wrapped = PostResult.SUCCESS;
+				postAttempt.release();
+			}
+			
+			@Override
+			public void onFailure(Throwable error, String content) {
+				result.wrapped = PostResult.FAILURE;
+				postAttempt.release();
+			}
+		}
+	}
+	
+	private class Login {
+		
+		private static final String http = "http://";
+		private static final String path = "/login";
+		
+		private final String url;
+		private final String email;
+		private final String password;
+		
+		private final SynchronousPoster poster = new SynchronousPoster(client);
+		
+		public Login(String server, String email, String password) {
+			this.url = http + server + path;
+			this.email = email;
+			this.password = password;
+		}
+		
+		public PostResult execute() {
+			Log.d(TAG, "Logging in...");
+			RequestParams params = new RequestParams();
+			params.put("email", email);
+			params.put("password", password);
+			return poster.post(url,  params);
+		}
+		
+	}
+	
+	private class Upload {
+		
+		static final String path = "/api/images/upload";
+		
+		private final String url;
+		private final Report report;
+		
+		private final SynchronousPoster poster = new SynchronousPoster(client);
+		
+		public Upload(String server, long id) {
+			
+			DatabaseHelper dbh = DatabaseHelper.openReadOnly(self);
+			Report report;
+			try {
+				report = dbh.getReport(id);
+			} finally {
+				dbh.close();
+			}
+			
+			this.url = server + path;
+			this.report = report;
+			
+		}
+		
+		public PostResult execute() {
+			
+			File picture = new File(report.picturePath);
+			
+			RequestParams params = new RequestParams();
+			try {
+				params.put(picture.getName(), picture);
+			} catch (FileNotFoundException e) {
+				return PostResult.FAILURE;
+			}
+			
+			return poster.post(url,  params);
+		}
+		
 	}
 
 }
