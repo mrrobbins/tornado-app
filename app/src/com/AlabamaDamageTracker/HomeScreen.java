@@ -42,6 +42,25 @@ public class HomeScreen extends Activity {
 		final Button newDamage = (Button) findViewById(R.id.launch_capture);
 		final Button viewDamage = (Button) findViewById(R.id.launch_reports);
 		final Button uploadDamage = (Button) findViewById(R.id.launch_upload);
+		final Button about = (Button) findViewById(R.id.launch_about_info);
+		
+		about.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				AlertDialog.Builder b = new AlertDialog.Builder(self);
+				b.setTitle("About");
+				b.setMessage(
+					"The Univerity of Alabama\n" +
+					"Disaster Damage App\n\n" +
+					"Contributors:\n" +
+					"\tChris Hodapp\n" +
+					"\tMatt Robbins\n" +
+					"\tKyle Redding\n" +
+					"\tLuke Taylor\n" +
+					"\tJonathan Fikes"
+				);
+				b.show();
+			}
+		});
 
 		newDamage.setOnClickListener (new View.OnClickListener() {
 			public void onClick(View v) {
