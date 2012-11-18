@@ -26,14 +26,16 @@ public class ReportListActivity extends ListActivity {
 	private class ListItem {
 		public final long id;
 		public final String name;
-				public ListItem(long id, String name) {
+		public final boolean uploaded;
+				public ListItem(long id, String name, boolean uploaded) {
 			this.id = id;
 			this.name = name;
+			this.uploaded = uploaded;
 		}
 		
 		@Override
 		public String toString() {
-			return name;
+			return name + (uploaded ? " (Uploaded)" : "");
 		}
 		
 	}
@@ -59,7 +61,7 @@ public class ReportListActivity extends ListActivity {
 				String timeStamp;
 				if (r.time == 0) timeStamp = "";
 				else timeStamp = new SimpleDateFormat("E MM/dd/yyyy HH:mm:ss").format(new Date(r.time));
-				places.add(new ListItem(r.id, timeStamp));
+				places.add(new ListItem(r.id, timeStamp, r.uploaded));
 			}
 		} finally {
 			dbh.close();
