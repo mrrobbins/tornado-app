@@ -1,7 +1,9 @@
 package com.AlabamaDamageTracker;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -12,6 +14,9 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -35,6 +40,8 @@ public class EditImageScreen extends Activity {
 	private long time;
 	private double latitude;
 	private double longitude;
+	private List<DamageIndicator> damageIndicators;
+	private boolean spinnerSetup = true;
 	
 	private Long dbId = null;
 	
@@ -43,6 +50,7 @@ public class EditImageScreen extends Activity {
 		super.onCreate(savedInstanceState);
 		
 		setContentView(R.layout.edit_notes_screen);
+		damageIndicators = DatabaseHelper.openReadOnly(self).getIndicators();
 		
 		Intent intent = getIntent();
 		if (intent.hasExtra(KEY_REPORT_ID)) {
@@ -104,6 +112,8 @@ public class EditImageScreen extends Activity {
 				r.picturePath = imagePath;
 				r.address = getAddress();
 				r.notes = getNotes();
+				r.damageIndicator = getDamageIndicator();
+				r.degreeOfDamage = getDamageDegree();
 				dbh.updateReport(r);
 			} else {
 				r = new Report();
@@ -113,6 +123,8 @@ public class EditImageScreen extends Activity {
 				r.latitude = getLatitude();
 				r.longitude = getLongitude();
 				r.time = getTime();
+				r.damageIndicator = getDamageIndicator();
+				r.degreeOfDamage = getDamageDegree();
 				dbId = dbh.insertReport(r);
 			}
 		} finally {
@@ -132,8 +144,9 @@ public class EditImageScreen extends Activity {
 			
 			setAddress(source.address);
 			setNotes(source.notes);
+			
 			setDamageIndicator(source.damageIndicator);
-			setDamageDegree(source.degreeOfDamage);
+			setDamageDegree(source.damageIndicator, source.degreeOfDamage);
 		} finally {
 			dbh.close();
 		}
@@ -144,13 +157,15 @@ public class EditImageScreen extends Activity {
 		setTime(intent.getLongExtra(KEY_IMAGE_TIME, 0));
 		setLatitude(intent.getDoubleExtra(KEY_IMAGE_LATITUDE, 0));
 		setLongitude(intent.getDoubleExtra(KEY_IMAGE_LONGITUDE, 0));
+		setDamageIndicator(0);
+		setDamageDegree(0, 0);
 	}
 	
 	private void setTime(long time) {
 		this.time = time;
 		String timeStamp;
 		if (time == 0) timeStamp = "";
-		else timeStamp = new SimpleDateFormat("E M/d/y H:m:s").format(new Date(time));
+		else timeStamp = new SimpleDateFormat("E MM/dd/yyyy HH:mm:ss").format(new Date(time));
 		
 		((TextView) findViewById(R.id.info_time)).setText(timeStamp);
 	}
@@ -188,18 +203,57 @@ public class EditImageScreen extends Activity {
 	
 	private int getDamageIndicator() {
 		Spinner indicators = (Spinner) findViewById(R.id.info_indicator);
-		return (int) indicators.getSelectedItemId();
+		return (int) indicators.getSelectedItemPosition();
 	}
-	private void setDamageIndicator(int indicator) {
+	private void setDamageIndicator(Integer indicator) {
 		Spinner indicators = (Spinner) findViewById(R.id.info_indicator);
+		List<String> selectionItems = new ArrayList<String>(damageIndicators.size());
+		selectionItems.add("None");
+		for (DamageIndicator di : damageIndicators) {
+			selectionItems.add(di.toStringShort());
+		}
+		
+		ArrayAdapter<String> adapter = 
+				new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, selectionItems);
+		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		indicators.setAdapter(adapter);
+		
+		indicators.setSelection(indicator);
+		
+		indicators.setOnItemSelectedListener(new OnItemSelectedListener() {
+			public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+				if (!spinnerSetup) {
+					setDamageDegree(pos, 0);
+				} else {
+					spinnerSetup = false;
+				}
+			}
+		    public void onNothingSelected(AdapterView<?> parent) {}
+		});
 	}
 	
 	private int getDamageDegree() {
-		Spinner indicators = (Spinner) findViewById(R.id.info_degree);
-		return (int) indicators.getSelectedItemId();
+		Spinner degrees = (Spinner) findViewById(R.id.info_degree);
+		return (int) degrees.getSelectedItemPosition();
 	}
-	private void setDamageDegree(int degree) {
-		Spinner indicators = (Spinner) findViewById(R.id.info_degree);
+	private void setDamageDegree(int indicator, int degree) {
+		Spinner degrees = (Spinner) findViewById(R.id.info_degree);
+		if (indicator == 0) {
+			degrees.setAdapter(null);
+		} else {
+			List<DegreeOfDamage> damageDegrees = DatabaseHelper.openReadOnly(this).getDegrees(indicator);
+			List<String> selectionItems = new ArrayList<String>();
+			selectionItems.add("None");
+			for (DegreeOfDamage dod : damageDegrees) {
+				selectionItems.add(dod.toStringShort());
+			}
+			
+			ArrayAdapter<String> adapter = 
+					new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, selectionItems);
+			adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			degrees.setAdapter(adapter);
+			degrees.setSelection(degree);
+		}
 	}
 	
 	private void setImage(String path) {

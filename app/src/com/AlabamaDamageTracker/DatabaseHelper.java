@@ -39,13 +39,13 @@ public class DatabaseHelper {
 	public static final String CN_DI = "damage_indicator";
 	public static final String CN_DOD = "degree_of_damage";
 	
-	public static final String TABLE_DI = "tornado_damge_indicator";
+	public static final String TABLE_DI = "tornado_damage_indicator";
 	
 	public static final String CN_ABBREV = "abbreviation";
 	
 	public static final String TABLE_DOD = "tornado_degree_of_damage";
 	public static final String CN_INDIC_ABBREV = "indicator_abbreviation";
-	public static final String CN_WIND_LB = "loweset_windspeed";
+	public static final String CN_WIND_LB = "lowest_windspeed";
 	public static final String CN_WIND_EV = "expected_windspeed";
 	public static final String CN_WIND_UB = "highest_windspeed";
 
@@ -164,7 +164,10 @@ public class DatabaseHelper {
 		else cv.put(CN_NOTES, "");
 		
 		if (report.damageIndicator != null) cv.put(CN_DI, report.damageIndicator);
-		else cv.put(CN_DI, -1);
+		else cv.put(CN_DI, 0);
+		
+		if (report.degreeOfDamage != null) cv.put(CN_DOD, report.degreeOfDamage);
+		else cv.put(CN_DOD, 0);
 		
 		if (report.picturePath != null) cv.put(CN_PIC_PATH, report.picturePath);
 		
@@ -191,7 +194,10 @@ public class DatabaseHelper {
 		else cv.put(CN_ADDR, "");
 		
 		if (report.damageIndicator != null) cv.put(CN_DI, report.damageIndicator);
-		else cv.put(CN_DI, -1);
+		else cv.put(CN_DI, 0);
+		
+		if (report.degreeOfDamage != null) cv.put(CN_DOD, report.degreeOfDamage);
+		else cv.put(CN_DOD, 0);
 		
 		String filter = CN_ID + " = " + report.id;
 		int updateCnt = database.update(TABLE_REPORT, cv, filter, null);
@@ -472,7 +478,7 @@ public class DatabaseHelper {
 	}
 	
 	public DegreeOfDamage getDegree(long id, String abbreviation) {
-		String filter = CN_ID + " = " + id + ", " + CN_INDIC_ABBREV + " = " + abbreviation;
+		String filter = CN_ID + " = " + id + ", " + CN_INDIC_ABBREV + " = '" + abbreviation + "'";
 		Cursor c = database.query(TABLE_DOD, null, filter, null, null, null, null, "1");
 		c.moveToFirst();
 		
@@ -492,6 +498,50 @@ public class DatabaseHelper {
 		degree.highestWindspeed = c.getInt(colWindUb);
 		
 		return degree;
+	}
+	
+	public List<DegreeOfDamage> getDegrees(int id) {
+//		String filter = CN_INDIC_ABBREV + " = '" + abbreviation + "'";
+//		Cursor c = database.query(TABLE_DOD, null, filter, null, null, null, null);
+		
+		String query = String.format(
+			"SELECT * FROM tornado_degree_of_damage " +
+			"INNER JOIN (SELECT abbreviation FROM tornado_damage_indicator WHERE _id = %d) " +
+			"ON indicator_abbreviation = abbreviation",
+			id
+		);
+		Cursor c = database.rawQuery(query, null);
+		c.moveToFirst();
+		
+		final int colId = c.getColumnIndex(CN_ID);
+		final int colDesc = c.getColumnIndex(CN_DESC);
+		final int colIndicAbbrev = c.getColumnIndex(CN_INDIC_ABBREV);
+		final int colWindLb = c.getColumnIndex(CN_WIND_LB);
+		final int colWindEv = c.getColumnIndex(CN_WIND_EV);
+		final int colWindUb = c.getColumnIndex(CN_WIND_UB);
+		
+		
+		Log.d("foo", String.format("colid:%d coldesc:%d, colabbrev%d, windlb:%d, windev:%d, windub:%d", colId, colDesc, colIndicAbbrev, colWindLb, colWindEv, colWindUb));
+		
+		List<DegreeOfDamage> degrees = new ArrayList<DegreeOfDamage>(c.getCount());
+		
+		while (!c.isAfterLast()) {
+			
+			DegreeOfDamage degree = new DegreeOfDamage();
+			
+			degree.id = c.getLong(colId);
+			degree.description = c.getString(colDesc);
+			degree.indicatorAbbreviation = c.getString(colIndicAbbrev);
+			degree.lowestWindspeed = c.getInt(colWindLb);
+			degree.expectedWindspeed = c.getInt(colWindEv);
+			degree.highestWindspeed = c.getInt(colWindUb);
+			
+			degrees.add(degree);
+			
+			c.moveToNext();
+		}
+		
+		return degrees;
 	}
 	
 	public List<DegreeOfDamage> getDegrees() {
@@ -522,7 +572,6 @@ public class DatabaseHelper {
 			
 			c.moveToNext();
 		}
-		
 		
 		return degrees;
 	}

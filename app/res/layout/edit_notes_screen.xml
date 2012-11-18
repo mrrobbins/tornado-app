@@ -78,7 +78,7 @@
    		    />
     		<Spinner
     		    android:id="@+id/info_indicator"
-    		    android:layout_width="154dp"
+    		    android:layout_width="match_parent"
     		    android:layout_height="wrap_content"
    		    />
 
@@ -90,7 +90,7 @@
    		    />
     		<Spinner
     		    android:id="@+id/info_degree"
-    		    android:layout_width="154dp"
+    		    android:layout_width="match_parent"
     		    android:layout_height="wrap_content"
    		    />
 
