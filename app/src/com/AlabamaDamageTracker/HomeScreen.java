@@ -67,7 +67,7 @@ public class HomeScreen extends Activity {
 				
 				List<Report> reports = new LinkedList<Report>();
 				try {
-					reports = dbh.getReports();
+					reports = dbh.getPendingReports();
 				} finally {
 					dbh.close();
 				}

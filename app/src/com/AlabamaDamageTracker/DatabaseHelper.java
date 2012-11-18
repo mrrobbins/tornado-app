@@ -199,6 +199,9 @@ public class DatabaseHelper {
 		if (report.degreeOfDamage != null) cv.put(CN_DOD, report.degreeOfDamage);
 		else cv.put(CN_DOD, 0);
 		
+		if (report.uploaded != null) cv.put(CN_UPLOADED, report.uploaded);
+		else cv.put(CN_UPLOADED, false);
+		
 		String filter = CN_ID + " = " + report.id;
 		int updateCnt = database.update(TABLE_REPORT, cv, filter, null);
 		
@@ -281,6 +284,47 @@ public class DatabaseHelper {
 		
 		return reports;
 		
+	}
+	
+	public List<Report> getPendingReports() {
+		Cursor c = database.query(TABLE_REPORT, null, CN_UPLOADED + " = '0'", null, null, null, null);
+		
+		int colId = c.getColumnIndex(CN_ID);
+		int colLat = c.getColumnIndex(CN_LAT);
+		int colLang = c.getColumnIndex(CN_LONG);
+		int colAddr = c.getColumnIndex(CN_ADDR);
+		int colPicPath = c.getColumnIndex(CN_PIC_PATH);
+		int colUploaded = c.getColumnIndex(CN_UPLOADED);
+		int colNotes = c.getColumnIndex(CN_NOTES);
+		int colTime = c.getColumnIndex(CN_TIME);
+		int colDesc = c.getColumnIndex(CN_LOC_DESC);
+		int colDod = c.getColumnIndex(CN_DOD);
+		int colDi = c.getColumnIndex(CN_DI);
+		
+		List<Report> reports = new ArrayList<Report>(c.getCount());
+		c.moveToFirst();
+		
+		while (!c.isAfterLast()) {
+			
+			Report report = new Report();
+			report.id = c.getLong(colId);
+			report.address = c.getString(colAddr);
+			report.notes = c.getString(colNotes);
+			report.notes = c.getString(colNotes);
+			report.latitude = c.getDouble(colLat);
+			report.longitude = c.getDouble(colLang);
+			report.picturePath = c.getString(colPicPath);
+			report.time = c.getLong(colTime);
+			report.uploaded = c.getInt(colUploaded) == 0 ? false : true;
+			report.description = c.getString(colDesc);
+			report.degreeOfDamage = c.getInt(colDod);
+			report.damageIndicator = c.getInt(colDi);
+			
+			reports.add(report);
+			c.moveToNext();
+		}
+		
+		return reports;
 	}
 	
 	public void setLattitude(long id, double newLatitude) {

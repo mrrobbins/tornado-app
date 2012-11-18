@@ -171,7 +171,16 @@ public class UploadService extends IntentService {
 		int failed = 0;
 		int total = ids.length;
 		for (Report r : reports) {
-			if (upload(server, r)) done++; else failed++;
+			if (upload(server, r)) {
+				r.uploaded = true;
+				DatabaseHelper dbh1 = DatabaseHelper.openReadWrite(self);
+				try {
+					dbh1.updateReport(r);
+				} finally {
+					dbh1.close();
+				}
+				done++;
+			} else failed++;
 			statusNotifcation(done, total);
 		}
 		
