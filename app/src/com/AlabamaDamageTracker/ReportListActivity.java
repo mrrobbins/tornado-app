@@ -58,7 +58,7 @@ public class ReportListActivity extends ListActivity {
 			for (Report r : dbh.getReports()) {
 				String timeStamp;
 				if (r.time == 0) timeStamp = "";
-				else timeStamp = new SimpleDateFormat("E M/d/y HH:mm:ss").format(new Date(r.time));
+				else timeStamp = new SimpleDateFormat("E MM/dd/yyyy HH:mm:ss").format(new Date(r.time));
 				places.add(new ListItem(r.id, timeStamp));
 			}
 		} finally {
