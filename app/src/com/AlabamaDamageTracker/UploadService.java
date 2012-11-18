@@ -120,8 +120,8 @@ public class UploadService extends IntentService {
 		
 	    HttpParams params = client.getParams();
 	    
-	    HttpConnectionParams.setConnectionTimeout(params, 100);
-	    HttpConnectionParams.setSoTimeout(params, 100);
+	    HttpConnectionParams.setConnectionTimeout(params, 20000);
+	    HttpConnectionParams.setSoTimeout(params, 20000);
 
 		final long[] ids = intent.getLongArrayExtra(KEY_REPORT_IDS);
 
