@@ -2,6 +2,7 @@ package com.AlabamaDamageTracker;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +13,7 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.HttpConnectionParams;
@@ -19,6 +21,7 @@ import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 
+import android.R;
 import android.app.IntentService;
 import android.app.NotificationManager;
 import android.app.Service;
@@ -224,8 +227,18 @@ public class UploadService extends IntentService {
         String extension = mimeTypes.getFileExtensionFromUrl(f.getName());
         String mimeType = mimeTypes.getMimeTypeFromExtension(extension);
         
+        String key = f.getName();
 		MultipartEntity mpe = new MultipartEntity();
-		mpe.addPart(f.getName(), new FileBody(f, mimeType));
+		mpe.addPart(key, new FileBody(f, mimeType));
+		try {
+			mpe.addPart(key + "|latitude", new StringBody(String.valueOf(report.latitude)));
+			mpe.addPart(key + "|longitude", new StringBody(String.valueOf(report.longitude)));
+			mpe.addPart(key + "|indicator", new StringBody(String.valueOf(report.damageIndicator)));
+			mpe.addPart(key + "|degree", new StringBody(String.valueOf(report.degreeOfDamage)));
+			mpe.addPart(key + "|notes", new StringBody(report.notes));
+			mpe.addPart(key + "|address", new StringBody(report.address));
+			mpe.addPart(key + "|time", new StringBody(String.valueOf(report.time)));
+		} catch (UnsupportedEncodingException use) { }
 		
 		post.setEntity(mpe);
 		
