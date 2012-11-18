@@ -1,24 +1,32 @@
 package com.AlabamaDamageTracker;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Semaphore;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HttpContext;
 
 import android.app.IntentService;
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.AsyncHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
+import android.webkit.MimeTypeMap;
 
 public class UploadService extends IntentService {
 
@@ -32,65 +40,88 @@ public class UploadService extends IntentService {
 	private static final String loginPath = "/login";
 	private static final String uploadPath = "/api/images/upload";
 
-	private static final AsyncHttpClient client = new AsyncHttpClient();
+    private HttpClient client = new DefaultHttpClient();
+    private HttpContext contenxt = new BasicHttpContext();
 
 	private final static String TAG = "UploadService";
 
 	private static final int ongoingNotificationCode = 888;
-	private static int doneNotificationCode = 0;
-
+	private static int doneNotificationCode = 999;
+	
 	private Context self = this;
 
 	public UploadService() {
 		super("UplaodServiceWorker");
 	}
-
-	private static class Wrapper<T> {
-		public T wrapped;
-		public Wrapper(T wrapped) {
-			this.wrapped = wrapped;
-		}
-	}
-
-	protected void updateOngoingNotification(int successful, int failed, int total) {
-		String tickerText = "Upladeding photos (" + (successful + failed) + "/" + total + ")";
-		Notification n = new Notification(
-			android.R.drawable.ic_notification_overlay,
-			tickerText,
-			System.currentTimeMillis()
-		);
-
-		startForeground(ongoingNotificationCode, n);
-
-	}
-
-	protected void showDoneNotification(int successful, int failed, int total) {
-
-		final String message = "Uploaded " + successful + "/" + total + " (" + failed + " failed)";
+	
+	protected void badUsernameOrPassword() {
+		
+		NotificationCompat.Builder nb =
+			new NotificationCompat.Builder(getApplicationContext())
+			.setContentTitle("Damage Report")
+			.setContentText("Bad Email or Password")
+			.setTicker("Bad Email or Password")
+			.setSmallIcon(android.R.drawable.ic_dialog_alert);
+		
 		NotificationManager nm = (NotificationManager) getSystemService(Service.NOTIFICATION_SERVICE);
-		Notification n = new Notification(
-			android.R.drawable.ic_notification_overlay,
-			message,
-			System.currentTimeMillis()
-		);
-		nm.notify(doneNotificationCode++, n);
+		nm.notify(doneNotificationCode, nb.build());
 	}
 	
-	protected void showBadLoginNotification() {
-
-		final String message = "Upload failed: Invalid username or password";
+	protected void loginUnableToConnect() {
+		
+		NotificationCompat.Builder nb =
+			new NotificationCompat.Builder(getApplicationContext())
+			.setContentTitle("Damage Report")
+			.setContentText("Unable to connect to server")
+			.setTicker("Unable to connect")
+			.setSmallIcon(android.R.drawable.ic_dialog_alert);
+		
 		NotificationManager nm = (NotificationManager) getSystemService(Service.NOTIFICATION_SERVICE);
-		Notification n = new Notification(
-			android.R.drawable.ic_notification_overlay,
-			message,
-			System.currentTimeMillis()
-		);
-		nm.notify(doneNotificationCode++, n);
+		nm.notify(doneNotificationCode, nb.build());
+	}
+	
+	protected void badServerName() {
+		
+		NotificationCompat.Builder nb =
+			new NotificationCompat.Builder(getApplicationContext())
+			.setContentTitle("Damage Report")
+			.setContentText("Invalid server name")
+			.setTicker("Invalid server")
+			.setSmallIcon(android.R.drawable.ic_dialog_alert);
+		
+		NotificationManager nm = (NotificationManager) getSystemService(Service.NOTIFICATION_SERVICE);
+		nm.notify(doneNotificationCode, nb.build());
+	}
+	
+	protected void statusNotifcation(int done, int total) {
+		NotificationCompat.Builder nb =
+			new NotificationCompat.Builder(getApplicationContext())
+			.setContentTitle("Damage Report")
+			.setContentText("Uploading Images")
+			.setSmallIcon(android.R.drawable.ic_menu_upload)
+			.setProgress(total, done, false);
+		
+		startForeground(ongoingNotificationCode, nb.build());
+	}
+	
+	protected void doneNotification(int done, int failed) {
+		NotificationCompat.Builder nb =
+			new NotificationCompat.Builder(getApplicationContext())
+			.setContentTitle("Damage Report")
+			.setContentText("Completed upload (" + failed + "/" + (done + failed) + " failed)")
+			.setSmallIcon(android.R.drawable.ic_menu_upload);
+		
+		NotificationManager nm = (NotificationManager) getSystemService(Service.NOTIFICATION_SERVICE);
+		nm.notify(doneNotificationCode++, nb.build());
 	}
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
-		Log.d(TAG, "Handle New Intent");
+		
+	    HttpParams params = client.getParams();
+	    
+	    HttpConnectionParams.setConnectionTimeout(params, 100);
+	    HttpConnectionParams.setSoTimeout(params, 100);
 
 		final long[] ids = intent.getLongArrayExtra(KEY_REPORT_IDS);
 
@@ -117,127 +148,86 @@ public class UploadService extends IntentService {
 			Log.e(TAG, "No password in Intent");
 			return;
 		}
-
-		client.setTimeout(1000);
 		
-		PostResult loginResult = new Login(server, email, password).execute();
-		Log.d(TAG, "Login Status: " + loginResult.toString());
+		boolean loggedin = login(server, email, password);
+		if (!loggedin) {
+			stopForeground(true);
+			return;
+		}
+		
+		ArrayList<Report> reports = new ArrayList<Report>(ids.length);
+		
+		DatabaseHelper dbh = DatabaseHelper.openReadOnly(self);
+		try {
+			for (long id : ids) {
+				Report r = dbh.getReport(id);
+				reports.add(r);
+			}
+		} finally {
+			dbh.close();
+		}
+		
+		int done = 0;
+		int failed = 0;
+		int total = ids.length;
+		for (Report r : reports) {
+			if (upload(server, r)) done++; else failed++;
+			statusNotifcation(done, total);
+		}
+		
+		doneNotification(done, failed);
+		stopForeground(true);
 		
 	}
 	
-	private enum PostResult {
-		SUCCESS, FAILURE, TIMEOUT
-	}
-	
-	private class SynchronousPoster {
+	private boolean login(String server, String email, String password) {
 		
-		private final AsyncHttpClient client;
-		
-		public SynchronousPoster(AsyncHttpClient client) {
-			this.client = client;
-		}
-		
-		public PostResult post(String url, RequestParams params) {
-			Wrapper<PostResult> result = new Wrapper<PostResult>(null);
-			Semaphore postAttemptComplete = new Semaphore(0);
-			client.post(self, url, params, new PostHandler(postAttemptComplete, result));
-			try {
-				postAttemptComplete.acquire();
-				return result.wrapped;
-			} catch (InterruptedException ie) {
-				return PostResult.TIMEOUT;
+        HttpPost post = new HttpPost("http://" + server + loginPath);
+        
+        List<NameValuePair> pairs = new ArrayList<NameValuePair>(2);
+        pairs.add(new BasicNameValuePair("email", email));
+        pairs.add(new BasicNameValuePair("password", password));
+		try {
+			post.setEntity(new UrlEncodedFormEntity(pairs));
+			HttpResponse response = client.execute(post, contenxt);
+			if (response.getStatusLine().getStatusCode() != 200) {
+				badUsernameOrPassword();
+				return false;
+			} else {
+				return true;
 			}
-		}
-		
-		private class PostHandler extends AsyncHttpResponseHandler {
-			
-			private final Wrapper<PostResult> result;
-			private final Semaphore postAttempt;
-			
-			public PostHandler(Semaphore postAttemptComplete, Wrapper<PostResult> result) {
-				this.postAttempt = postAttemptComplete;
-				this.result = result;
-			}
-			
-			@Override
-			public void onSuccess(String content) {
-				result.wrapped = PostResult.SUCCESS;
-				postAttempt.release();
-			}
-			
-			@Override
-			public void onFailure(Throwable error, String content) {
-				result.wrapped = PostResult.FAILURE;
-				postAttempt.release();
-			}
+		} catch (IOException ioe) {
+			loginUnableToConnect();
+			return false;
+		} catch (IllegalArgumentException iae) {
+			badServerName();
+			return false;
 		}
 	}
 	
-	private class Login {
+	private  boolean upload(String server, Report report) {
 		
-		private static final String http = "http://";
-		private static final String path = "/login";
+        HttpPost post = new HttpPost("http://" + server + uploadPath);
+        
+		File f = new File(report.picturePath);
 		
-		private final String url;
-		private final String email;
-		private final String password;
+        MimeTypeMap mimeTypes = MimeTypeMap.getSingleton();
+        String extension = mimeTypes.getFileExtensionFromUrl(f.getName());
+        String mimeType = mimeTypes.getMimeTypeFromExtension(extension);
+        
+		MultipartEntity mpe = new MultipartEntity();
+		mpe.addPart(f.getName(), new FileBody(f, mimeType));
 		
-		private final SynchronousPoster poster = new SynchronousPoster(client);
+		post.setEntity(mpe);
 		
-		public Login(String server, String email, String password) {
-			this.url = http + server + path;
-			this.email = email;
-			this.password = password;
-		}
-		
-		public PostResult execute() {
-			Log.d(TAG, "Logging in...");
-			RequestParams params = new RequestParams();
-			params.put("email", email);
-			params.put("password", password);
-			return poster.post(url,  params);
+		try {
+			HttpResponse response = client.execute(post, contenxt);
+			return response.getStatusLine().getStatusCode() == 200;
+		} catch (IOException ioe) {
+			return false;
 		}
 		
 	}
 	
-	private class Upload {
-		
-		static final String path = "/api/images/upload";
-		
-		private final String url;
-		private final Report report;
-		
-		private final SynchronousPoster poster = new SynchronousPoster(client);
-		
-		public Upload(String server, long id) {
-			
-			DatabaseHelper dbh = DatabaseHelper.openReadOnly(self);
-			Report report;
-			try {
-				report = dbh.getReport(id);
-			} finally {
-				dbh.close();
-			}
-			
-			this.url = server + path;
-			this.report = report;
-			
-		}
-		
-		public PostResult execute() {
-			
-			File picture = new File(report.picturePath);
-			
-			RequestParams params = new RequestParams();
-			try {
-				params.put(picture.getName(), picture);
-			} catch (FileNotFoundException e) {
-				return PostResult.FAILURE;
-			}
-			
-			return poster.post(url,  params);
-		}
-		
-	}
 
 }

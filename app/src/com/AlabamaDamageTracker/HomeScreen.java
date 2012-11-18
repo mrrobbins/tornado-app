@@ -8,6 +8,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,13 +18,18 @@ import android.widget.EditText;
 
 public class HomeScreen extends Activity {
 
+	private static final String KEY_SERVER_ADDRESS = "server address";
+	private static final String KEY_EMAIL = "email";
 	private static final String TAG = "HomeScreen";
 	
 	private final HomeScreen self = this;
+	
+	private SharedPreferences prefs;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		prefs = getPreferences(MODE_PRIVATE);
 	}
 	
 	public void onPause() {
@@ -83,6 +90,8 @@ public class HomeScreen extends Activity {
 				LayoutInflater inflater = getLayoutInflater();
 
 				final View v = inflater.inflate(R.layout.user_login_screen, null);
+				((EditText) v.findViewById(R.id.server_address)).setText(prefs.getString(KEY_SERVER_ADDRESS, ""));
+				((EditText) v.findViewById(R.id.user_email)).setText(prefs.getString(KEY_EMAIL, ""));
 				b.setView(v);
 
 				b.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
@@ -95,6 +104,16 @@ public class HomeScreen extends Activity {
 						String server = ((EditText) v.findViewById(R.id.server_address)).getText().toString();
 						String email = ((EditText) v.findViewById(R.id.user_email)).getText().toString();
 						String password = ((EditText) v.findViewById(R.id.user_password)).getText().toString();
+						
+						Editor e = prefs.edit();
+						try {
+							e.putString(KEY_SERVER_ADDRESS, server);
+							e.putString(KEY_EMAIL, email);
+						} finally {
+							e.commit();
+						}
+						
+						
 						Intent serviceIntent = new Intent(self, UploadService.class);
 						serviceIntent.setAction(UploadService.ACTION_UPLOAD_IMAGES);
 						serviceIntent.putExtra(UploadService.KEY_SERVER_ADDRESS, server);
