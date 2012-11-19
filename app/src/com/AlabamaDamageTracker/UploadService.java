@@ -108,10 +108,17 @@ public class UploadService extends IntentService {
 	}
 	
 	protected void doneNotification(int done, int failed) {
+		
+		String message;
+		if (failed == 0) {
+			message = "Completed (" + done + "/" + done + " uploaded)";
+		} else {
+			message = "Completed with errors (" + done + "/" + (done + failed) + " uploaded)";
+		}
 		NotificationCompat.Builder nb =
 			new NotificationCompat.Builder(getApplicationContext())
 			.setContentTitle("Damage Report")
-			.setContentText("Completed upload (" + failed + "/" + (done + failed) + " failed)")
+			.setContentText(message)
 			.setSmallIcon(android.R.drawable.ic_menu_upload);
 		
 		NotificationManager nm = (NotificationManager) getSystemService(Service.NOTIFICATION_SERVICE);
