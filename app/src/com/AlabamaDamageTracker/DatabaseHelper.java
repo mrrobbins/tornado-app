@@ -244,8 +244,10 @@ public class DatabaseHelper {
 	}
 	
 	public List<Report> getReports() {
-		
-		Cursor c = database.query(TABLE_REPORT, null, null, null, null, null, null);
+	
+		// order images by descending capture time
+		String orderBy = CN_TIME + " DESC";
+		Cursor c = database.query(TABLE_REPORT, null, null, null, null, null, orderBy);
 		
 		int colId = c.getColumnIndex(CN_ID);
 		int colLat = c.getColumnIndex(CN_LAT);
