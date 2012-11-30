@@ -155,8 +155,10 @@ public class EditImageScreen extends Activity {
 	public void loadFromBundle(Intent intent) {
 		setImage(intent.getStringExtra(KEY_IMAGE_PATH));
 		setTime(intent.getLongExtra(KEY_IMAGE_TIME, 0));
-		setLatitude(intent.getDoubleExtra(KEY_IMAGE_LATITUDE, 0));
-		setLongitude(intent.getDoubleExtra(KEY_IMAGE_LONGITUDE, 0));
+		latitude = intent.getDoubleExtra(KEY_IMAGE_LATITUDE, 0);
+		setLatitude(latitude);
+		longitude = intent.getDoubleExtra(KEY_IMAGE_LONGITUDE, 0);
+		setLongitude(longitude);
 		setDamageIndicator(0);
 		setDamageDegree(0, 0);
 	}
