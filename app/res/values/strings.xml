@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Alabama Damage Tracker</string>
+    <string name="app_name">Damage Tracker</string>
     <string name="home_capture">Camera</string>
     <string name="home_reports">View Images</string>
     <string name="home_Continue">Continue Current Location</string>

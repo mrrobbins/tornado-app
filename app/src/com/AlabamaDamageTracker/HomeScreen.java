@@ -47,16 +47,17 @@ public class HomeScreen extends Activity {
 		about.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				AlertDialog.Builder b = new AlertDialog.Builder(self);
-				b.setTitle("About");
+				b.setTitle("Damage Tracker");
+				b.setIcon(getResources().getDrawable(R.drawable.nsf));
 				b.setMessage(
-					"The Univerity of Alabama\n" +
-					"Disaster Damage App\n\n" +
-					"Contributors:\n" +
+					"The Univerity of Alabama\n\n" +
+					"Developers:\n" +
 					"\tChris Hodapp\n" +
 					"\tMatt Robbins\n" +
 					"\tKyle Redding\n" +
 					"\tLuke Taylor\n" +
-					"\tJonathan Fikes"
+					"\tJonathan Fikes\n\n" +
+					"This project was supported in part by NSF grant #1047780"
 				);
 				b.show();
 			}
