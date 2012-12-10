@@ -71,7 +71,9 @@ public class EditImageScreen extends Activity {
 		if (d instanceof BitmapDrawable) {
 			BitmapDrawable bmd = (BitmapDrawable) d;
 			Bitmap b = bmd.getBitmap();
-			b.recycle();
+			if (b != null) {
+				b.recycle();
+			}
 		}
 		super.onDestroy();
 	}
